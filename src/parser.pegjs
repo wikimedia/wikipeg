@@ -41,6 +41,11 @@
     "!": "semantic_not"
   };
 
+  var OPS_TO_PARAMETER_PREDICATE_TYPES = {
+    "&": "parameter_and",
+    "!": "parameter_not"
+  };
+
   function filterEmptyStrings(array) {
     var result = [], i;
 
@@ -137,7 +142,7 @@ ActionExpression
     }
 
 SequenceExpression
-  = first:LabeledExpression rest:(__ LabeledExpression)* {
+  = first:SequenceElement rest:(__ SequenceElement)* {
       return rest.length > 0
         ? {
             type:     "sequence",
@@ -145,6 +150,22 @@ SequenceExpression
             location: location()
           }
         : first;
+    }
+
+SequenceElement
+  = LabeledParameter
+  / LabeledExpression
+  / PrefixedExpression
+
+LabeledParameter
+  = label:Identifier __ ":" __ "<" __ ampersand:"&"? __ parameter:Identifier __ ">" {
+      return {
+        type:      "labeled_param",
+        label:     label,
+        parameter: parameter,
+        isref:     !!ampersand,
+        location:  location()
+      };
     }
 
 LabeledExpression
@@ -156,7 +177,6 @@ LabeledExpression
         location:   location()
       };
     }
-  / PrefixedExpression
 
 PrefixedExpression
   = operator:PrefixedOperator __ expression:SuffixedExpression {
@@ -194,11 +214,82 @@ PrimaryExpression
   / AnyMatcher
   / RuleReferenceExpression
   / SemanticPredicateExpression
+  / ParameterPredicateExpression
   / "(" __ expression:Expression __ ")" { return expression; }
 
 RuleReferenceExpression
-  = name:IdentifierName !(__ (StringLiteral __)? "=") {
-      return { type: "rule_ref", name: name, location: location() };
+  = name:IdentifierName assign:ParameterAssignmentBlock? !(__ (StringLiteral __)? "=") {
+      return {
+        type: "rule_ref",
+        name: name,
+        assignments: assign || [],
+        location: location()
+      };
+    }
+
+ParameterAssignmentBlock
+  = "<" __ first:ParameterAssignment rest:(__ "," __ ParameterAssignment)* __ ">" {
+      return buildList(first, rest, 3);
+    }
+
+ParameterAssignment
+  = ampersand:"&"? __ name:Identifier __ assign:( "=" __ ParameterValue / ParameterIncrement )? {
+      var type, value;
+      if (assign) {
+        if (assign[2]) {
+          type = assign[2].type;
+          value = assign[2].value;
+        } else {
+          type = assign.type;
+          value = assign.value;
+        }
+      } else {
+        type = 'boolean';
+        value = true;
+      }
+      return {
+        name: name,
+        type: type,
+        value: value,
+        isref: !!ampersand
+      };
+    }
+
+ParameterValue
+  = ParameterValueBoolean
+  / ParameterValueInteger
+  / ParameterValueString
+
+ParameterValueBoolean
+  = value:$BooleanLiteral {
+      return {
+        type: "boolean",
+        value: value === "true"
+      };
+    }
+
+ParameterValueInteger
+  = value:$[0-9]+ {
+      return {
+        type: "integer",
+        value: Number.parseInt(value)
+      };
+    }
+
+ParameterValueString
+  = value:StringLiteral {
+      return {
+        type: "string",
+        value: value
+      };
+    }
+
+ParameterIncrement
+  = "++" {
+      return {
+        type: "increment",
+        value: 1
+      };
     }
 
 SemanticPredicateExpression
@@ -211,6 +302,19 @@ SemanticPredicateExpression
     }
 
 SemanticPredicateOperator
+  = "&"
+  / "!"
+
+ParameterPredicateExpression
+  = operator:ParameterPredicateOperator __ "<" __ parameter:Identifier __ ">" {
+      return {
+        type:      OPS_TO_PARAMETER_PREDICATE_TYPES[operator],
+        parameter: parameter,
+        location:  location()
+      };
+    }
+
+ParameterPredicateOperator
   = "&"
   / "!"
 

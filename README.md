@@ -10,9 +10,8 @@ Features
   * Simple and expressive grammar syntax
   * Integrates both lexical and syntactical analysis
   * Parsers have excellent error reporting out of the box
-  * Based on [parsing expression
-    grammar](http://en.wikipedia.org/wiki/Parsing_expression_grammar) formalism
-    — more powerful than traditional LL(*k*) and LR(*k*) parsers
+  * Based on [parsing expression grammar](http://en.wikipedia.org/wiki/Parsing_expression_grammar)
+    formalism — more powerful than traditional LL(*k*) and LR(*k*) parsers
 
 Installation
 ------------
@@ -417,6 +416,80 @@ Note that curly braces in the action code must be balanced.
 Try to match the first expression, if it does not succeed, try the second one,
 etc. Return the match result of the first successfully matched expression. If no
 expression matches, consider the match failed.
+
+Rule parameter syntax
+---------------------
+
+WikiPEG supports passing parameters to rules. This is an extension compared to
+PEG.js.
+
+All parameters referenced in the grammar have an initial value and can
+be used before their first assignment.
+
+Parameters have a type detected at compile time: boolean, integer,
+string or reference. Initial values for each type are:
+  - boolean: false
+  - integer: 0
+  - string: ""
+  - reference: null
+
+The parameter namespace is global, but the value of a parameter reverts
+to its previous value after termination of the assigning rule reference.
+
+The syntax is as follows:
+
+#### & < *parameter* >
+
+Assert that the parameter "x" is true or nonzero
+
+#### ! < *parameter* >
+
+Assert that the parameter "x" is false or zero
+
+#### *rule* < *parameter* = true >
+
+Match a parsing expression of a rule recursively, and assign *parameter* to
+boolean true in *rule* and its callees.
+
+#### *rule* < *parameter* = false >
+
+Assign parameter "x" to false.
+
+#### *rule* < *parameter* >
+
+Shortcut for rule<parameter=true>.
+
+#### *rule* < *parameter* = 0 >
+
+Integer assignment.
+
+#### *rule* < *parameter* ++ >
+
+Assign x = x + 1.
+
+#### *rule* < *parameter* = "*literal*" >
+
+String assignment.
+
+#### *rule* < & *parameter* = 1 >
+
+Create a reference (in/out) parameter and give it an initial value of 1.
+
+Note that it is illegal to assign to a reference parameter using non-reference
+syntax.
+
+#### *variable* : < *parameter* >
+
+Expose value of parameter "x" as variable "v" in JS action or predicate code.
+
+The value of a reference parameter can be exposed to JS as an ordinary rvalue
+in this way: assigning to it will have no effect outside the action in question.
+
+#### *variable* : < & *parameter* >
+
+In JS this will expose the reference parameter "r" as an object with r.set(),
+r.get(). In PHP it will be a native reference such that {$r = 1;} will set
+the value of the reference in the declaration scope.
 
 Requirements
 -------------

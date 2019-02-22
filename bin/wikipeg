@@ -258,7 +258,7 @@ readStream(inputStream, function(input) {
     if (e.location !== undefined) {
       abort(e.location.start.line + ":" + e.location.start.column + ": " + e.message);
     } else {
-      abort(e.message);
+      throw e;
     }
   }
 

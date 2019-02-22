@@ -82,7 +82,8 @@ describe("generated parser API", function() {
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 0, line: 1, column: 1 }
-              }
+              },
+              args: { silence: false }
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.enter',
@@ -90,7 +91,8 @@ describe("generated parser API", function() {
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 0, line: 1, column: 1 }
-              }
+              },
+              args: { silence: false }
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.fail',
@@ -106,7 +108,8 @@ describe("generated parser API", function() {
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 0, line: 1, column: 1 }
-              }
+              },
+              args: { silence: false }
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.match',

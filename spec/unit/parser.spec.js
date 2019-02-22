@@ -92,7 +92,7 @@ describe("PEG.js grammar parser", function() {
   }
 
   function ruleRefGrammar(name) {
-    return oneRuleGrammar({ type: "rule_ref", name: name });
+    return oneRuleGrammar({ type: "rule_ref", name: name, assignments: [] });
   }
 
   var trivialGrammar = literalGrammar("abcd", false),
