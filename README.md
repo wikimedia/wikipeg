@@ -1,10 +1,8 @@
-PEG.js
+WikiPEG
 ======
 
-PEG.js is a simple parser generator for JavaScript that produces fast parsers
-with excellent error reporting. You can use it to process complex data or
-computer languages and build transformers, interpreters, compilers and other
-tools easily.
+WikiPEG is a recursive descent parser generator for Node.js, intended mostly
+to support Parsoid's complex needs. It is a fork of PEG.js with a new backend.
 
 Features
 --------
@@ -15,56 +13,40 @@ Features
   * Based on [parsing expression
     grammar](http://en.wikipedia.org/wiki/Parsing_expression_grammar) formalism
     — more powerful than traditional LL(*k*) and LR(*k*) parsers
-  * Usable [from your browser](http://pegjs.org/online), from the command line,
-    or via JavaScript API
-
-Getting Started
----------------
-
-[Online version](http://pegjs.org/online) is the easiest way to generate a
-parser. Just enter your grammar, try parsing few inputs, and download generated
-parser code.
 
 Installation
 ------------
 
 ### Node.js
 
-To use the `pegjs` command, install PEG.js globally:
+To use the `wikipeg` command, install WikiPEG globally:
 
-    $ npm install -g pegjs
+    $ npm install -g wikipeg
 
-To use the JavaScript API, install PEG.js locally:
+To use the JavaScript API, install WikiPEG locally:
 
-    $ npm install pegjs
+    $ npm install wikipeg
 
-If you need both the `pegjs` command and the JavaScript API, install PEG.js both
+If you need both the `wikipeg` command and the JavaScript API, install WikiPEG both
 ways.
-
-### Browser
-
-[Download](http://pegjs.org/#download) the PEG.js library (regular or minified
-version) or install it using Bower:
-
-    $ bower install pegjs
 
 Generating a Parser
 -------------------
 
-PEG.js generates parser from a grammar that describes expected input and can
+WikiPEG generates parser from a grammar that describes expected input and can
 specify what the parser returns (using semantic actions on matched parts of the
 input). Generated parser itself is a JavaScript object with a simple API.
 
 ### Command Line
 
-To generate a parser from your grammar, use the `pegjs` command:
+To generate a parser from your grammar, use the `wikipeg` command:
 
-    $ pegjs arithmetics.pegjs
+    $ wikipeg arithmetics.pegjs
 
 This writes parser source code into a file with the same name as the grammar
 file but with “.js” extension. You can also specify the output file explicitly:
 
-    $ pegjs arithmetics.pegjs arithmetics-parser.js
+    $ wikipeg arithmetics.pegjs arithmetics-parser.js
 
 If you omit both input and output file, standard input and output are used.
 
@@ -79,7 +61,7 @@ You can tweak the generated parser with several options:
     time in pathological cases but making the parser slower
   * `--allowed-start-rules` — comma-separated list of rules the parser will be
     allowed to start parsing from (default: the first rule in the grammar)
-  * `--plugin` — makes PEG.js use a specified plugin (can be specified multiple
+  * `--plugin` — makes WikiPEG use a specified plugin (can be specified multiple
     times)
   * `--extra-options` — additional options (in JSON format) to pass to
     `PEG.buildParser`
@@ -89,11 +71,11 @@ You can tweak the generated parser with several options:
 
 ### JavaScript API
 
-In Node.js, require the PEG.js parser generator module:
+In Node.js, require the WikiPEG parser generator module:
 
-    var PEG = require("pegjs");
+    var PEG = require("wikipeg");
 
-In browser, include the PEG.js library in your web page or application using the
+In browser, include the WikiPEG library in your web page or application using the
 `<script>` tag. The API will be available in the `PEG` global object.
 
 To generate a parser, call the `PEG.buildParser` method and pass your grammar as
@@ -436,39 +418,16 @@ Try to match the first expression, if it does not succeed, try the second one,
 etc. Return the match result of the first successfully matched expression. If no
 expression matches, consider the match failed.
 
-Compatibility
+Requirements
 -------------
 
-Both the parser generator and generated parsers should run well in the following
-environments:
-
-  * Node.js 0.10.0+
-  * IE 8+
-  * Firefox
-  * Chrome
-  * Safari
-  * Opera
+* Node.js 6 or later
 
 Development
 -----------
 
-  * [Project website](http://pegjs.org/)
-  * [Wiki](https://github.com/pegjs/pegjs/wiki)
-  * [Source code](https://github.com/pegjs/pegjs)
-  * [Trello board](https://trello.com/board/peg-js/50a8eba48cf95d4957006b01)
-  * [Issue tracker](https://github.com/pegjs/pegjs/issues)
-  * [Google Group](http://groups.google.com/group/pegjs)
-  * [Twitter](http://twitter.com/peg_js)
+Development occurs in the "wikipeg" project in [Wikimedia's Gerrit](https://www.mediawiki.org/wiki/Gerrit).
 
-PEG.js is developed by [David Majda](http://majda.cz/)
-([@dmajda](http://twitter.com/dmajda)). The [Bower
-package](https://github.com/pegjs/bower) is maintained by [Michel
-Krämer](http://www.michel-kraemer.com/)
-([@michelkraemer](https://twitter.com/michelkraemer)).
+Bugs should be reported to [Wikimedia's Phabricator](https://phabricator.wikimedia.org/)
 
-You are welcome to contribute code.  Unless your contribution is really trivial
-you should get in touch with me first — this can prevent wasted effort on both
-sides. You can send code both as a patch or a GitHub pull request.
-
-Note that PEG.js is still very much work in progress. There are no compatibility
-guarantees until version 1.0.
+WikiPEG is a derivative of PEG.js by David Majda.

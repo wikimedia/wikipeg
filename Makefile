@@ -1,6 +1,6 @@
 # ===== Variables =====
 
-PEGJS_VERSION = `cat $(VERSION_FILE)`
+WIKIPEG_VERSION = `cat $(VERSION_FILE)`
 
 # ===== Directories =====
 
@@ -18,8 +18,8 @@ NODE_MODULES_BIN_DIR = $(NODE_MODULES_DIR)/.bin
 PARSER_SRC_FILE = $(SRC_DIR)/parser.pegjs
 PARSER_OUT_FILE = $(LIB_DIR)/parser.js
 
-BROWSER_FILE_DEV = $(BROWSER_DIR)/peg-$(PEGJS_VERSION).js
-BROWSER_FILE_MIN = $(BROWSER_DIR)/peg-$(PEGJS_VERSION).min.js
+BROWSER_FILE_DEV = $(BROWSER_DIR)/peg-$(WIKIPEG_VERSION).js
+BROWSER_FILE_MIN = $(BROWSER_DIR)/peg-$(WIKIPEG_VERSION).min.js
 
 VERSION_FILE = VERSION
 
@@ -29,7 +29,7 @@ NODE          = node
 JSHINT        = $(NODE_MODULES_BIN_DIR)/jshint
 UGLIFYJS      = $(NODE_MODULES_BIN_DIR)/uglifyjs
 JASMINE_NODE  = $(NODE_MODULES_BIN_DIR)/jasmine-node
-PEGJS         = $(BIN_DIR)/pegjs
+WIKIPEG       = $(BIN_DIR)/wikipeg
 BENCHMARK_RUN = $(BENCHMARK_DIR)/run
 
 # ===== Targets =====
@@ -39,7 +39,7 @@ all: browser
 
 # Generate the grammar parser
 parser:
-	$(PEGJS) $(PARSER_SRC_FILE) $(PARSER_OUT_FILE)
+	$(WIKIPEG) $(PARSER_SRC_FILE) $(PARSER_OUT_FILE)
 
 # Build the browser version of the library
 browser:
@@ -76,7 +76,7 @@ hint:
 	  `find $(SPEC_DIR) -name '*.js' -and -not -path '$(SPEC_DIR)/vendor/*'` \
 	  $(BENCHMARK_DIR)/*.js                                                  \
 	  $(BENCHMARK_RUN)                                                       \
-	  $(PEGJS)
+	  $(WIKIPEG)
 
 .PHONY:  all parser browser browserclean spec benchmark hint
 .SILENT: all parser browser browserclean spec benchmark hint

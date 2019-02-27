@@ -24,7 +24,7 @@ EOT
 
 measure_size() {
   for file in examples/*.pegjs; do
-    bin/pegjs "$file"
+    bin/wikipeg "$file"
   done
 
   echo $(cat examples/*.js | wc -c)

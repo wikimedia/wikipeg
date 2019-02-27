@@ -10,11 +10,11 @@ var PEG  = require("../lib/peg");
 /* Helpers */
 
 function printVersion() {
-  util.puts("PEG.js " + PEG.VERSION);
+  util.puts("WikiPEG " + PEG.VERSION);
 }
 
 function printHelp() {
-  util.puts("Usage: pegjs [options] [--] [<input_file>] [<output_file>]");
+  util.puts("Usage: wikipeg [options] [--] [<input_file>] [<output_file>]");
   util.puts("");
   util.puts("Generates a parser from the PEG grammar specified in the <input_file> and writes");
   util.puts("it to the <output_file>.");

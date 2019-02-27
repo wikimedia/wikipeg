@@ -1,19 +1,25 @@
 {
-  "name":            "pegjs",
-  "version":         "0.8.0",
+  "name":            "wikipeg",
+  "version":         "1.0.0",
   "description":     "Parser generator for JavaScript",
-  "homepage":        "http://pegjs.org/",
-  "author":          {
-    "name":  "David Majda",
-    "email": "david@majda.cz",
-    "url":   "http://majda.cz/"
-  },
+  "homepage":        "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
+  "contributors": [
+    {
+      "name":  "David Majda",
+      "email": "david@majda.cz",
+      "url":   "http://majda.cz/"
+    },
+    {
+      "name":  "Tim Starling",
+      "email": "tstarling@wikimedia.org"
+    }
+  ],
   "files": [
     "CHANGELOG.md",
     "LICENSE",
     "README.md",
     "VERSION",
-    "bin/pegjs",
+    "bin/wikipeg",
     "examples/arithmetics.pegjs",
     "examples/css.pegjs",
     "examples/javascript.pegjs",
@@ -45,13 +51,13 @@
     "package.json"
   ],
   "main":            "lib/peg",
-  "bin":             "bin/pegjs",
+  "bin":             "bin/wikipeg",
   "scripts":         {
     "test": "make hint && make spec"
   },
   "repository":      {
     "type": "git",
-    "url":  "http://github.com/pegjs/pegjs.git"
+    "url":  "https://gerrit.wikimedia.org/r/wikipeg"
   },
   "devDependencies": {
     "jasmine-node": "= 1.11.0",
@@ -59,6 +65,6 @@
     "jshint":       "= 2.3.0"
   },
   "engines":         {
-    "node": ">= 0.10.0"
+    "node": ">= 6.0.0"
   }
 }
