@@ -26,7 +26,7 @@ VERSION_FILE = VERSION
 # ===== Executables =====
 
 NODE          = node
-JSHINT        = $(NODE_MODULES_BIN_DIR)/jshint
+ESLINT        = $(NODE_MODULES_BIN_DIR)/eslint
 UGLIFYJS      = $(NODE_MODULES_BIN_DIR)/uglifyjs
 JASMINE_NODE  = $(NODE_MODULES_BIN_DIR)/jasmine-node
 WIKIPEG       = $(BIN_DIR)/wikipeg
@@ -69,11 +69,12 @@ spec:
 benchmark:
 	$(BENCHMARK_RUN)
 
-# Run JSHint on the source
-hint:
-	$(JSHINT)                                                                \
-	  `find $(LIB_DIR) -name '*.js'`                                         \
-	  `find $(SPEC_DIR) -name '*.js' -and -not -path '$(SPEC_DIR)/vendor/*'` \
+# Run ESLint on the source
+eslint:
+	$(ESLINT)                                                                \
+          --ignore-pattern=$(SPEC_DIR)/vendor                                    \
+	  $(LIB_DIR)                                                             \
+	  $(SPEC_DIR)                                                            \
 	  $(BENCHMARK_DIR)/*.js                                                  \
 	  $(BENCHMARK_RUN)                                                       \
 	  $(WIKIPEG)

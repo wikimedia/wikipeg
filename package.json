@@ -2,6 +2,7 @@
   "name":            "wikipeg",
   "version":         "1.0.0",
   "description":     "Parser generator for JavaScript",
+  "license":         "MIT",
   "homepage":        "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
   "contributors": [
     {
@@ -29,9 +30,7 @@
     "lib/compiler/javascript.js",
     "lib/compiler/opcodes.js",
     "lib/compiler/visitor.js",
-    "lib/compiler/passes/ast-to-stackvm.js",
     "lib/compiler/passes/ast-to-regalloc-js.js",
-    "lib/compiler/passes/stackvm-to-javascript.js",
     "lib/compiler/passes/remove-proxy-rules.js",
     "lib/compiler/passes/report-left-recursion.js",
     "lib/compiler/passes/report-infinite-loops.js",
@@ -53,7 +52,8 @@
   "main":            "lib/peg",
   "bin":             "bin/wikipeg",
   "scripts":         {
-    "test": "make hint && make spec"
+    "eslint": "make eslint",
+    "test": "make eslint && make spec"
   },
   "repository":      {
     "type": "git",
@@ -62,7 +62,7 @@
   "devDependencies": {
     "jasmine-node": "= 1.11.0",
     "uglify-js":    "= 2.4.7",
-    "jshint":       "= 2.3.0"
+    "eslint":       "= 5.14.1"
   },
   "engines":         {
     "node": ">= 6.0.0"

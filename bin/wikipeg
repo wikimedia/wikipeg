@@ -220,17 +220,19 @@ while (args.length > 0 && isOption(args[0])) {
   nextArg();
 }
 
+var inputStream, outputStream;
+
 switch (args.length) {
   case 0:
     process.stdin.resume();
-    var inputStream = process.stdin;
-    var outputStream = process.stdout;
+    inputStream = process.stdin;
+    outputStream = process.stdout;
     break;
 
   case 1:
   case 2:
     var inputFile = args[0];
-    var inputStream = fs.createReadStream(inputFile);
+    inputStream = fs.createReadStream(inputFile);
     inputStream.on("error", function() {
       abort("Can't read from file \"" + inputFile + "\".");
     });
@@ -238,7 +240,7 @@ switch (args.length) {
     var outputFile = args.length === 1
       ? args[0].replace(/\.[^.]*$/, ".js")
       : args[1];
-    var outputStream = fs.createWriteStream(outputFile);
+    outputStream = fs.createWriteStream(outputFile);
     outputStream.on("error", function() {
       abort("Can't write to file \"" + outputFile + "\".");
     });

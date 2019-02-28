@@ -19,7 +19,7 @@ $("#run").click(function() {
         MS_IN_S = 1000;
 
     resultsTable.append(
-        "<tr class='" + klass + "'>"
+      "<tr class='" + klass + "'>"
       +   "<td class='title'>"
       +     (url !== null ? "<a href='" + url + "'>" : "")
       +       title
@@ -81,7 +81,7 @@ $("#run").click(function() {
       }).responseText;
     },
 
-    testStart: function(benchmark, test) {
+    testStart: function(/*benchmark, test*/) {
       /* Nothing to do. */
     },
 

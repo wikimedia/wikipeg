@@ -19,10 +19,6 @@ describe("generated parser behavior", function() {
     var optionsVariants = [
           { cache: false },
           { cache: true },
-          { cache: false, stackvm: true, optimize: "size"  },
-          { cache: false, stackvm: true, optimize: "speed"  },
-          { cache: true, stackvm: true, optimize: "size"  },
-          { cache: true, stackvm: true, optimize: "speed"  },
         ],
         i;
 

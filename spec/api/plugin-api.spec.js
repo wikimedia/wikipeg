@@ -55,7 +55,7 @@ describe("plugin API", function() {
 
     it("receives configuration", function() {
       var plugin = {
-            use: function(config, options) {
+            use: function(config /*, options*/) {
               var i;
 
               expect(config).toBeObject();
@@ -86,19 +86,19 @@ describe("plugin API", function() {
     });
 
     it("receives options", function() {
-      var buildParserOptions = { foo: 42 },
-          plugin             = {
+      var plugin             = {
             use: function(config, options) {
               expect(options).toEqual(buildParserOptions);
             }
-          };
+          },
+          buildParserOptions = { foo: 42, plugins: [plugin] };
 
       PEG.buildParser(grammar, buildParserOptions);
     });
 
     it("can replace parser", function() {
       var plugin = {
-            use: function(config, options) {
+            use: function(config /*, options*/) {
               var parser = PEG.buildParser([
                     'start = .* {',
                     '  return {',
@@ -124,7 +124,7 @@ describe("plugin API", function() {
 
     it("can change compiler passes", function() {
       var plugin = {
-            use: function(config, options) {
+            use: function(config /*, options*/) {
               var pass = function(ast) {
                     ast.code = '({ parse: function() { return 42; } })';
                   };
