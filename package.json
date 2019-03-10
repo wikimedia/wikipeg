@@ -1,7 +1,7 @@
 {
   "name":            "wikipeg",
-  "version":         "1.0.2",
-  "description":     "Parser generator for JavaScript",
+  "version":         "2.0.0",
+  "description":     "Parser generator for JavaScript and PHP",
   "license":         "MIT",
   "homepage":        "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
   "contributors": [
@@ -22,7 +22,10 @@
     "VERSION",
     "bin/wikipeg",
     "examples/*.pegjs",
+    "examples/*.pegphp",
     "lib/**/*.js",
+    "lib/**/*.php",
+    "src/**/*.php",
     "tools/build-browser.js",
     "package.json"
   ],

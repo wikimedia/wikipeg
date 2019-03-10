@@ -285,10 +285,16 @@ describe("generated parser behavior", function() {
 
     describe("character class", function() {
       describe("matching", function() {
-        it("matches empty classes", function() {
+        it("fails to match empty classes", function() {
           var parser = PEG.buildParser('start = []', options);
 
           expect(parser).toFailToParse("a");
+        });
+
+        it("fails to match empty classes at end", function() {
+          var parser = PEG.buildParser('start = []', options);
+
+          expect(parser).toFailToParse("");
         });
 
         it("matches classes with a character list", function() {

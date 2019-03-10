@@ -1,0 +1,10 @@
+{
+  "name": "wikimedia/wikipeg",
+  "description": "Parser generator for JavaScript and PHP",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "WikiPEG\\": "src"
+    }
+  }
+}

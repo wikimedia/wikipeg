@@ -30,11 +30,18 @@
       "rules": {
         "indent": "off",
         "no-trailing-spaces": "off",
-        "no-unused-vars": "off"
+        "no-unused-vars": "off",
+        "no-console": "off"
       }
     },
     {
       "files": "lib/runtime/*.js",
+      "rules": {
+        "no-console": "off",
+        "indent": "off",
+        "no-unused-vars": "off",
+        "no-unreachable": "off"
+      },
       "globals": {
         "text": "readonly",
         "input": "readonly",
@@ -43,13 +50,6 @@
         "location": "readonly",
         "error": "readonly",
         "peg$SyntaxError": "readonly"
-      }
-    },
-    {
-      "files": "lib/runtime/*.js",
-      "rules": {
-        "indent": "off",
-        "no-unused-vars": "off"
       }
     },
     {
