@@ -1,0 +1,77 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "extends": "eslint:recommended",
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2015
+  },
+  "rules": {
+    "indent": [
+      "error", 2, {
+        "VariableDeclarator": 2,
+        "SwitchCase": 1
+      }
+    ],
+    "linebreak-style": ["error", "unix"],
+    "semi": ["error", "always"],
+    "no-control-regex": "off",
+    "no-useless-escape": "off",
+    "no-trailing-spaces": "error"
+  },
+  "overrides": [
+    {
+      "files": "lib/parser.js",
+      "rules": {
+        "indent": "off",
+        "no-trailing-spaces": "off",
+        "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": "lib/runtime/*.js",
+      "globals": {
+        "text": "readonly",
+        "input": "readonly",
+        "peg$savedPos": "writable",
+        "peg$currPos": "writable",
+        "location": "readonly",
+        "error": "readonly",
+        "peg$SyntaxError": "readonly"
+      }
+    },
+    {
+      "files": "lib/runtime/*.js",
+      "rules": {
+        "indent": "off",
+        "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": "lib/runtime/trace-helpers.js",
+      "globals": {
+        "peg$tracer": "readonly",
+        "peg$computeLocation": "readonly",
+        "peg$FAILED": "readonly"
+      }
+    },
+    {
+      "files": "lib/runtime/tracer.js",
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": "spec/**",
+      "rules": {
+        "indent": "off",
+        "no-console": "off"
+      }
+    }
+  ]
+}
