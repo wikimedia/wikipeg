@@ -1,0 +1,302 @@
+{ // PHP
+
+  private $undefined = false;
+
+  /**
+   * Construct an associative array from arrays in which the even-numbered
+   * keys contain the keys of the result array, and the odd-numbered keys
+   * contain the values of the result array.
+   *
+   * @param array ...$arrays
+   * @return array
+   */
+  private function assocFromFlat(...$arrays) {
+    $ret = [];
+    foreach ($arrays as $array) {
+      for ($i = 0; $i < count( $array ); $i += 2) {
+        $key = $array[$i];
+        $value = $array[$i + 1];
+        $ret[$key] = $value;
+      }
+    }
+    return $ret;
+  }
+
+  /**
+   * Construct an associative array from pairs. Each pair has the key as the
+   * first (0) element and the value as the second (1) element. Each argument
+   * contains an array of such arrays.
+   *
+   * @param array ...$pairArrays
+   * @return array
+   */
+  private function assocFromPairs(...$pairArrays) {
+    $ret = [];
+    foreach ($pairArrays as $pairs) {
+      foreach ($pairs as list($key, $value)) {
+        $ret[$key] = $value;
+      }
+    }
+    return $ret;
+  }
+
+  /**
+   * From each element of the input array, extract the element at the specified
+   * index and add the value to the result array.
+   *
+   * @param array $input
+   * @param int $index
+   * @return array
+   */
+  private function extractList($input, $index) {
+    $ret = [];
+    foreach ($input as $item) {
+      if (array_key_exists($index, $item)) {
+        $ret[] = $item[$index];
+      }
+    }
+    return $ret;
+  }
+
+  /**
+   * Join an array of strings into a single string
+   *
+   * @param string[] $parts
+   * @return string
+   */
+  private function join($parts) {
+    return implode('', $parts);
+  }
+
+  /**
+   * Join the input arrays, all assumed to be sequentially indexed, to make
+   * a single result array.
+   *
+   * @param array ...$arrays
+   * @return array
+   */
+  private function mergeArrays(...$arrays) {
+    return array_merge(...$arrays);
+  }
+
+  /**
+   * Convert a string to an integer
+   *
+   * @param string $value
+   * @return int
+   */
+  private function toInteger($value) {
+    return intval($value);
+  }
+}
+
+{ // JavaScript
+
+  function assocFromFlat(...arrays) {
+    let ret = {};
+    for (let array of arrays) {
+      for (let i = 0; i < array.length; i += 2) {
+        let key = array[i];
+        let value = array[i + 1];
+        ret[key] = value;
+      }
+    }
+    return ret;
+  }
+
+  function assocFromPairs(...pairArrays) {
+    let ret = {};
+    for (let pairs of pairArrays) {
+      for (let pair of pairs) {
+        ret[pair[0]] = pair[1];
+      }
+    }
+    return ret;
+  }
+
+  function extractList(input, index) {
+    let ret = [];
+    for (let i = 0; i < input.length; i++) {
+      ret.push(input[i][index]);
+    }
+    return ret;
+  }
+
+  function join(parts) {
+    return parts.join('');
+  }
+
+  function mergeArrays(first, ...rest) {
+    return first.concat(...rest);
+  }
+
+  function toInteger(value) {
+    return Number.parseInt(value);
+  }
+}
+
+File =
+  VSpace tests:( Test VSpace )* {
+    return $this->extractList( $tests, 0 );
+  }
+
+Test =
+  desc:Desc grammar:Grammar cases:Cases end:End {
+    return $this->assocFromFlat([
+      "id", $desc[0],
+      "desc", $desc[1],
+      "grammar", $grammar,
+      "cases", $cases,
+      "end", $end
+    ] );
+  }
+
+Desc =
+  "!!" HSpace "desc" HSpace NL id:DescId "." HSpace lines:(DescLine)* {
+    return [ $id, $this->join($lines) ];
+  }
+
+DescId = $[a-zA-Z0-9_]*
+
+DescLine = !"!!" text:$[^\r\n]* NL { return $this->join([$text, ' ']); }
+
+Grammar =
+  "!!" HSpace "grammar" HSpace NL text:TextToDelimiter {
+    return $text;
+  }
+
+TextToDelimiter = $( ( !(NL "!!") . )* NL? )
+
+Cases =
+  "!!" HSpace "cases" HSpace NL
+  cases:(VSpace "" Case HSpace NL / HSpace NL )*
+  {
+    return $this->extractList($cases, 2);
+  }
+
+Case =
+  input:StringLiteral VSpace "=>" VSpace result:Result
+  {
+    return $this->assocFromFlat(['input', $input], $result);
+  }
+
+StringLiteral =
+  '"' s:DoubleQuotedStringLiteralChars* '"'
+  {
+    return $this->join($s);
+  }
+  / "'" s:SingleQuotedStringLiteralChars* "'"
+  {
+    return $this->join($s);
+  }
+
+DoubleQuotedStringLiteralChars =
+  $[^"\\]+
+  / "\\\\" { return "\\"; }
+  / "\\n" { return "\n"; }
+  / '\\"' { return '"'; }
+
+SingleQuotedStringLiteralChars =
+  $[^'\\]+
+  / "\\\\" { return "\\"; }
+  / "\\n" { return "\n"; }
+  / "\\'" { return "'"; }
+
+Result =
+  Error
+  / ReferenceError
+  / Expected
+
+Error =
+  "error" HSpace expression:Expression?
+  {
+    return [ "error", true, "errorResult", $expression ];
+  }
+
+ReferenceError =
+  "ReferenceError"
+  {
+    return [ "ReferenceError", true ];
+  }
+
+Expected = ( expr:Expression { return ["expected", $expr]; } )
+
+Expression =
+  ScalarLiteral
+  / ArrayLiteral
+  / ObjectLiteral
+
+ScalarLiteral
+  = NullLiteral
+  / TrueLiteral
+  / FalseLiteral
+  / UndefinedLiteral
+  / NumericLiteral
+  / StringLiteral
+
+NullLiteral =
+  "null" !IdentifierChar
+  {
+    return null;
+  }
+
+TrueLiteral =
+  "true" !IdentifierChar
+  {
+    return true;
+  }
+
+FalseLiteral =
+  "false" !IdentifierChar
+  {
+    return false;
+  }
+
+UndefinedLiteral =
+  "undefined" !IdentifierChar
+  {
+    return $this->undefined;
+  }
+
+NumericLiteral =
+  number: $ [0-9]+
+  {
+    return $this->toInteger( $number );
+  }
+
+ArrayLiteral =
+  "[" VSpace "]"
+  {
+    return [];
+  }
+  / "[" VSpace first:Expression rest:( VSpace "," VSpace Expression )* VSpace ","? VSpace "]"
+  {
+    return $this->mergeArrays([$first], $this->extractList($rest, 3));
+  }
+
+ObjectLiteral =
+  "{" VSpace "}"
+  {
+    return $this->assocFromPairs([]);
+  }
+  / "{" VSpace first:Property rest:( VSpace "," VSpace  Property )* VSpace ","? VSpace "}"
+  {
+    return $this->assocFromPairs([$first], $this->extractList($rest, 3));
+  }
+
+Property =
+  name:(StringLiteral / UnquotedPropertyName) VSpace ":" VSpace value:Expression
+  {
+    return [$name, $value];
+  }
+
+UnquotedPropertyName = $IdentifierChar+
+
+End = "!!" HSpace "end" HSpace NL
+
+IdentifierChar = [a-zA-Z0-9_]
+
+HSpace = $ ( "#" [^\n]* / [ \t] )*
+VSpace = $ ( "#" [^\n]* / [ \t\r\n] )*
+
+NL = $ ( "\n" / "\r\n" )

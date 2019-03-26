@@ -21,6 +21,7 @@ VERSION_FILE = VERSION
 # ===== Executables =====
 
 NODE          = node
+PHP           = php
 ESLINT        = $(NODE_MODULES_BIN_DIR)/eslint
 UGLIFYJS      = $(NODE_MODULES_BIN_DIR)/uglifyjs
 JASMINE_NODE  = $(NODE_MODULES_BIN_DIR)/jasmine-node
@@ -29,13 +30,20 @@ BENCHMARK_RUN = $(BENCHMARK_DIR)/run
 
 # ===== Targets =====
 
+all: parser test-parsers
+
 # Generate the grammar parser
 parser:
 	$(WIKIPEG) $(PARSER_SRC_FILE) $(PARSER_OUT_FILE)
 
+test: spec common-tests-php
+
 # Run the spec suite
 spec:
 	$(JASMINE_NODE) --verbose $(SPEC_DIR)
+
+common-tests-php:
+	$(PHP) tests/php/runCommonTests.php
 
 # Run the benchmark suite
 benchmark:
@@ -44,12 +52,12 @@ benchmark:
 # Run ESLint on the source
 eslint:
 	$(ESLINT)                                                                \
-          --ignore-pattern=$(SPEC_DIR)/vendor                                    \
+	        --ignore-pattern=$(SPEC_DIR)/vendor                                    \
 	  $(LIB_DIR)                                                             \
 	  $(SPEC_DIR)                                                            \
 	  $(BENCHMARK_DIR)/*.js                                                  \
 	  $(BENCHMARK_RUN)                                                       \
 	  $(WIKIPEG)
 
-.PHONY:  parser spec benchmark hint
-.SILENT: parser spec benchmark hint
+.PHONY:  parser test-parsers test common-tests-php spec benchmark eslint
+.SILENT: parser test-parsers test common-tests-php spec benchmark eslint

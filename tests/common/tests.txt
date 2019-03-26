@@ -1,0 +1,985 @@
+# This is a test case definition file shared between both PHP and JavaScript.
+# Actions need to be written in a common subset of both languages, except that
+# a dollar sign before a word is stripped in JS, presumed to be a variable.
+
+!! desc
+1. empty literal
+!! grammar
+start = ""
+!! cases
+"" => ""
+"a" => error
+!! end
+
+!! desc
+2. one-character literal
+!! grammar
+start = "a"
+!! cases
+"a" => "a"
+"b" => error
+!! end
+
+!! desc
+3. multi-character literal
+!! grammar
+start = "abcd"
+!! cases
+"abcd" => "abcd"
+"efgh" => error
+!! end
+
+!! desc
+4. case-sensitive ASCII literal
+!! grammar
+start = "a"
+!! cases
+"a" => "a"
+"b" => error { "type": "literal", "value": "a", "description": '"a"' }
+"" => error { "type": "literal", "value": "a", "description": '"a"' }
+!! end
+
+!! desc
+5. case-insensitive ASCII literal
+!! grammar
+start = "a"i
+!! cases
+"a" => "a"
+"A" => "A"
+"b" => error { "type": "literal", "value": "a", "description": '"a"' }
+!! end
+
+!! desc
+6. Empty character class
+!! grammar
+start = []
+!! cases
+"a" => error { "type": "class", "value": "[]", "description": "[]" }
+"" => error { "type": "class", "value": "[]", "description": "[]" }
+!! end
+
+!! desc
+7. ASCII class with a character list
+!! grammar
+start = [abc]
+!! cases
+"a" => "a"
+"b" => "b"
+"c" => "c"
+"d" => error { "type": "class", "value": "[abc]", "description": "[abc]" }
+"θ" => error { "type": "class", "value": "[abc]", "description": "[abc]" }
+!! end
+
+!! desc
+8. Non-ASCII character list
+!! grammar
+start = [θι]
+!! cases
+"a" => error
+"θ" => "θ"
+"ι" => "ι"
+"θa" => error
+!! end
+
+!! desc
+9. ASCII class with a character range
+!! grammar
+start = [a-c]
+!! cases
+"a" => "a"
+"b" => "b"
+"c" => "c"
+"d" => error { "type": "class", "value": "[a-c]", "description": "[a-c]" }
+"■" => error { "type": "class", "value": "[a-c]", "description": "[a-c]" }
+!! end
+
+!! desc
+10. Non-ASCII class with range
+!! grammar
+start = [θ-κ]
+!! cases
+"θ" => "θ"
+"ι" => "ι"
+"κ" => "κ"
+"λ" => error
+!! end
+
+!! desc
+11. Inverted character class
+!! grammar
+start = [^a]
+!! cases
+"a" => error { "type": "class", "value": "[^a]", "description": "[^a]" }
+"b" => "b"
+"■" => "■"
+"" => error
+!! end
+
+!! desc
+12. Inverted non-ASCII character class
+!! grammar
+start = [^θ]
+!! cases
+"a" => "a"
+"θ" => error
+"" => error
+!! end
+
+!! desc
+13. Case-sensitive ASCII character class
+!! grammar
+start = [a]
+!! cases
+"a" => "a"
+"A" => error { type: "class", value: "[a]", description: "[a]" }
+"b" => error { type: "class", value: "[a]", description: "[a]" }
+!! end
+
+!! desc
+13a. Class match advances parse position
+!! grammar
+start = [a] .
+!! cases
+"ab" => ["a", "b"]
+!! end
+
+!! desc
+14. Case-insensitive ASCII character class
+!! grammar
+start = [a]i
+!! cases
+"a" => "a"
+"A" => "A"
+"■" => error
+!! end
+
+!! desc
+15. Case-insensitive non-ASCII character class
+!! grammar
+start = [Δ]i
+!! cases
+"Δ" => "Δ"
+"δ" => "δ"
+"d" => error
+!! end
+
+!! desc
+16. Case-insensitive non-ASCII character class specified with lower-case letter
+!! grammar
+start = [δ]i
+!! cases
+"Δ" => "Δ"
+"δ" => "δ"
+"d" => error
+!! end
+
+!! desc
+17. Class with both range and list
+!! grammar
+start = [ea-c]
+!! cases
+"a" => "a"
+"b" => "b"
+"c" => "c"
+"e" => "e"
+"f" => error
+!! end
+
+!! desc
+18. Dot
+!! grammar
+start = .
+!! cases
+"a" => "a"
+"b" => "b"
+"c" => "c"
+"Δ" => "Δ"
+"ꬰ" => "ꬰ"
+"aa" => error
+"" => error { type: "any", description: "any character" }
+!! end
+
+!! desc
+19. Dot advances input position
+!! grammar
+start = . .
+!! cases
+"a" => error
+"ab" => ["a", "b"]
+"abc" => error
+"δΔ" => ["δ", "Δ"]
+"" => error { "type": "any", "description": "any character" }
+!! end
+
+!! desc
+20. Rule reference
+!! grammar
+start = a
+a = "a"
+!! cases
+"a" => "a"
+"b" => error { "type": "literal", "value": "a", "description": '"a"' }
+!! end
+
+!! desc
+21. Positive semantic predicate returning true
+!! grammar
+start = &{ return true; }
+!! cases
+"" => undefined
+!! end
+
+!! desc
+22. Positive semantic predicate returning false
+!! grammar
+start = &{ return false; }
+!! cases
+"" => error
+!! end
+
+!! desc
+23. Semantic predicate can access labeled elements in a sequence
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" &{ return $a === "a" && $b === "b" && $c === "c"; })
+!! cases
+"abcd" => ["a", "b", "c", ["d", undefined]]
+!! end
+
+!! desc
+24. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (optional)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" &{ return $a === "a" && $b === "b" && $c === "c"; })?
+!! cases
+"abcd" => ["a", "b", "c", ["d", undefined]]
+!! end
+
+!! desc
+25. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (zero or more)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" &{ return $a === "a" && $b === "b" && $c === "c"; })*
+!! cases
+"abcd" => ["a", "b", "c", [["d", undefined]]]
+!! end
+
+!! desc
+26. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (one or more)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" &{ return $a === "a" && $b === "b" && $c === "c"; })+
+!! cases
+"abcd" => ["a", "b", "c", [["d", undefined]]]
+!! end
+
+!! desc
+27. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (text)
+!! grammar
+start = a:"a" b:"b" c:"c" $("d" &{ return $a === "a" && $b === "b" && $c === "c"; })
+!! cases
+"abcd" => ["a", "b", "c", "d"]
+!! end
+
+!! desc
+28. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (positive simple predicate)
+!! grammar
+start = a:"a" b:"b" c:"c" &("d" &{ return $a === "a" && $b === "b" && $c === "c"; }) "d"
+!! cases
+"abcd" => ["a", "b", "c", undefined, "d"]
+!! end
+
+!! desc
+29. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (negative simple predicate)
+!! grammar
+start = a:"a" b:"b" c:"c" !("d" &{ return $a === "a" && $b === "b" && $c === "c"; }) "e"
+!! cases
+"abce" => ["a", "b", "c", undefined, "e"]
+!! end
+
+!! desc
+30. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (label)
+!! grammar
+start = a:"a" b:"b" c:"c" d:("d" &{ return $a === "a" && $b === "b" && $c === "c"; })
+!! cases
+"abcd" => ["a", "b", "c", ["d", undefined]]
+!! end
+
+!! desc
+31. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (sequence)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" "e" "f" &{ return $a === "a" && $b === "b" && $c === "c"; })
+!! cases
+"abcdef" => ["a", "b", "c", ["d", "e", "f", undefined]]
+!! end
+
+!! desc
+32. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (action)
+!! grammar
+start = a:"a" b:"b" c:"c" (d:("d" &{ return $a === "a" && $b === "b" && $c === "c"; }) { return $d; })
+!! cases
+"abcd" => ["a", "b", "c", ["d", undefined]]
+!! end
+
+!! desc
+33. Semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (choice)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" / "e" / "f" &{ return $a === "a" && $b === "b" && $c === "c"; })
+!! cases
+"abcf" => ["a", "b", "c", ["f", undefined]]
+!! end
+
+!! desc
+34. Negative semantic predicate returning false
+!! grammar
+start = !{ return false; }
+!! cases
+"" => undefined
+!! end
+
+!! desc
+35. Negative semantic predicate returning true
+!! grammar
+start = !{ return true; }
+!! cases
+"" => error
+!! end
+
+!! desc
+36. Negative semantic predicate can access labeled elements in a sequence
+!! grammar
+start = a:"a" b:"b" c:"c" !{ return $a !== "a" || $b !== "b" || $c !== "c"; }
+!! cases
+"abc" => ["a", "b", "c", undefined]
+!! end
+
+!! desc
+37. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (optional)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; })?
+!! cases
+"abcd" => ["a", "b", "c", ["d", undefined]]
+!! end
+
+!! desc
+38. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (zero or more)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; })*
+!! cases
+"abcd" => ["a", "b", "c", [["d", undefined]]]
+!! end
+
+!! desc
+39. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (one or more)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; })+
+!! cases
+"abcd" => ["a", "b", "c", [["d", undefined]]]
+!! end
+
+!! desc
+40. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (text)
+!! grammar
+start = a:"a" b:"b" c:"c" $("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; })
+!! cases
+"abcd" => ["a", "b", "c", "d"]
+!! end
+
+!! desc
+41. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (positive simple predicate)
+!! grammar
+start = a:"a" b:"b" c:"c" &("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; }) "d"
+!! cases
+"abcd" => ["a", "b", "c", undefined, "d"]
+!! end
+
+!! desc
+42. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (negative simple predicate)
+!! grammar
+start = a:"a" b:"b" c:"c" !("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; }) "e"
+!! cases
+"abce" => ["a", "b", "c", undefined, "e"]
+!! end
+
+!! desc
+43. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (label)
+!! grammar
+start = a:"a" b:"b" c:"c" d:("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; })
+!! cases
+"abcd" => ["a", "b", "c", ["d", undefined]]
+!! end
+
+!! desc
+44. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (sequence)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" "e" "f" !{ return $a !== "a" || $b !== "b" || $c !== "c"; })
+!! cases
+"abcdef" => ["a", "b", "c", ["d", "e", "f", undefined]]
+!! end
+
+!! desc
+45. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (action)
+!! grammar
+start = a:"a" b:"b" c:"c" (d:("d" !{ return $a !== "a" || $b !== "b" || $c !== "c"; }) { return $d; })
+!! cases
+"abcd" => ["a", "b", "c", ["d", undefined]]
+!! end
+
+!! desc
+46. Negative semantic predicate can access label variables from preceding labeled elements
+in an outside sequence (choice)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" / "e" / "f" !{ return $a !== "a" || $b !== "b" || $c !== "c"; })
+!! cases
+"abcf" => ["a", "b", "c", ["f", undefined]]
+!! end
+
+!! desc
+47. Group
+!! grammar
+start = ("a")
+!! cases
+"a" => "a"
+"b" => error
+!! end
+
+!! desc
+48. Optional
+!! grammar
+start = "a"?
+!! cases
+"a" => "a"
+"" => null
+!! end
+
+!! desc
+49. Zero or more
+!! grammar
+start = "a"*
+!! cases
+"" => []
+"a" => ["a"]
+"aaa" => ["a", "a", "a"]
+!! end
+
+!! desc
+50. One or more
+!! grammar
+start = "a"+
+!! cases
+"a" => ["a"]
+"aaa" => ["a", "a", "a"]
+"" => error
+!! end
+
+!! desc
+51. Text operator
+!! grammar
+start = $("a" "b" "c")
+!! cases
+"abc" => "abc"
+"b" => error
+!! end
+
+!! desc
+52. Positive simple predicate
+!! grammar
+start = &"a" "a"
+!! cases
+"a" => [undefined, "a"]
+"b" => error
+!! end
+
+!! desc
+53. Positive simple predicate discards any expectations recorded when matching the expression
+!! grammar
+start = "a" / &"b" / "c"
+!! cases
+"d" => error [
+  { type: "literal", value: "a", description: '"a"' },
+  { type: "literal", value: "c", description: '"c"' }
+]
+!! end
+
+!! desc
+54. Negative simple predicate
+!! grammar
+start = !"a"
+!! cases
+"a" => error
+!! end
+
+!! desc
+54a. Negative simple predicate when the expression doesn't match
+!! grammar
+start = !"a" "b"
+!! cases
+"b" => [undefined, "b"]
+!! end
+
+!! desc
+55. Negative simple predicate discards any expectations recorded when matching the expression
+!! grammar
+start = "a" / !"b" / "c"
+!! cases
+"b" => error [
+  { type: "literal", value: "a", description: '"a"' },
+  { type: "literal", value: "c", description: '"c"' }
+]
+!! end
+
+!! desc
+56. Label
+!! grammar
+start = a:"a"
+!! cases
+"a" => "a"
+"b" => error
+!! end
+
+!! desc
+57. Sequence
+!! grammar
+start = "a" "b" "c"
+!! cases
+"abc" => ["a", "b", "c"]
+"dbc" => error
+"adc" => error
+"abd" => error
+!! end
+
+!! desc
+58. Subsequence failure resets parse position
+!! grammar
+start = "a" "b" / "a"
+!! cases
+"a" => "a"
+!! end
+
+!! desc
+59. Action returning integer literal
+!! grammar
+start = "a" { return 42; }
+!! cases
+"a" => 42
+!! end
+
+!! desc
+60. Action can access label variables from a labeled expression
+!! grammar
+start = a:"a" { return $a; }
+!! cases
+"a" => "a"
+!! end
+
+!! desc
+61. Action can access label variables from a sequence with labeled elements
+!! grammar
+start = a:"a" b:"b" c:"c" { return [$a, $b, $c]; }
+!! cases
+"abc" => ["a", "b", "c"]
+!! end
+
+!! desc
+62. Action can access label variables from preceding labeled elements in an outside sequence (group)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" { return [$a, $b, $c]; })
+!! cases
+"abcd" => ["a", "b", "c", ["a", "b", "c"]]
+!! end
+
+!! desc
+63. Action can access label variables from preceding labeled elements in an outside sequence (optional)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" { return [$a, $b, $c]; })?
+!! cases
+"abcd" => ["a", "b", "c", ["a", "b", "c"]]
+!! end
+
+!! desc
+64. Action can access label variables from preceding labeled elements in an outside sequence (zero or more)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" { return [$a, $b, $c]; })*
+!! cases
+"abcd" => ["a", "b", "c", [["a", "b", "c"]]]
+!! end
+
+!! desc
+65. Action can access label variables from preceding labeled elements in an outside sequence (one or more)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" { return [$a, $b, $c]; })+
+!! cases
+"abcd" => ["a", "b", "c", [["a", "b", "c"]]]
+!! end
+
+!! desc
+66. Action can access label variables from preceding labeled elements in an outside sequence (text)
+!! grammar
+start = a:"a" b:"b" c:"c" $("d" { return [$a, $b, $c]; })
+!! cases
+"abcd" => ["a", "b", "c", "d"]
+!! end
+
+!! desc
+67. Action can access label variables from preceding labeled elements in an outside sequence (positive simple predicate)
+!! grammar
+start = a:"a" b:"b" c:"c" &("d" { return [$a, $b, $c]; }) "d"
+!! cases
+"abcd" => ["a", "b", "c", undefined, "d"]
+!! end
+
+!! desc
+68. Action can access label variables from preceding labeled elements in an outside sequence (negative simple predicate)
+!! grammar
+start = a:"a" b:"b" c:"c" !("d" { return [$a, $b, $c]; }) "e"
+!! cases
+"abce" => ["a", "b", "c", undefined, "e"]
+!! end
+
+!! desc
+69. Action can access label variables from preceding labeled elements in an outside sequence (label)
+!! grammar
+start = a:"a" b:"b" c:"c" d:("d" { return [$a, $b, $c]; })
+!! cases
+"abcd" => ["a", "b", "c", ["a", "b", "c"]]
+!! end
+
+!! desc
+70. Action can access label variables from preceding labeled elements in an outside sequence (sequence)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" "e" ("f" { return [$a, $b, $c]; }))
+!! cases
+"abcdef" => ["a", "b", "c", ["d", "e", ["a", "b", "c"]]]
+!! end
+
+!! desc
+71. Action can access label variables from preceding labeled elements in an outside sequence (action)
+!! grammar
+start = a:"a" b:"b" c:"c" (d:("d" { return [$a, $b, $c]; }) { return $d; })
+!! cases
+"abcd" => ["a", "b", "c", ["a", "b", "c"]]
+!! end
+
+!! desc
+72. Action can access label variables from preceding labeled elements in an outside sequence (choice)
+!! grammar
+start = a:"a" b:"b" c:"c" ("d" / "e" / "f" { return [$a, $b, $c]; })
+!! cases
+"abcf" => ["a", "b", "c", ["a", "b", "c"]]
+!! end
+
+!! desc
+73. Action can't access label variables from within a simple predicate
+!! grammar
+start = a:"a" &(b:"b") "b" {return $b;}
+!! cases
+"ab" => ReferenceError
+!! end
+
+!! desc
+74. Action can't access label variables from a previous nested choice
+!! grammar
+start = ("a"/b:"b") {return $b;}
+!! cases
+"b" => ReferenceError
+!! end
+
+!! desc
+75. Action can't access label variables from a previous nested text operator
+!! grammar
+start = $(a:"a") {return $a;}
+!! cases
+"a" => ReferenceError
+!! end
+
+!! desc
+76. Action can't access label variables from a conditional subexpression
+!! grammar
+start = (a:"a")? {return $a;}
+!! cases
+"a" => ReferenceError
+!! end
+
+!! desc
+77. Action can't access label variables from a star subexpression
+!! grammar
+start = (a:"a")* {return $a;}
+!! cases
+"a" => ReferenceError
+!! end
+
+!! desc
+78. Action can't access label variables from a plus subexpression
+!! grammar
+start = (a:"a")+ {return $a;}
+!! cases
+"a" => ReferenceError
+!! end
+
+!! desc
+79. A label variable is not overwritten by a later hidden one
+!! grammar
+start = a:"a" (a:"b")? {return $a;}
+!! cases
+"ab" => "a"
+!! end
+
+!! desc
+80. Expression failure with action
+!! grammar
+start = "a" { return 42; }
+!! cases
+"b" => error
+!! end
+
+!! desc
+81. When the expression doesn't match, the action is not executed
+!! grammar
+start = "a" { return $a; } / "b"
+!! cases
+"a" => ReferenceError
+"b" => "b"
+!! end
+
+!! desc
+82. Choice
+!! grammar
+start = "a" / "b" / "c"
+!! cases
+"a" => "a"
+"b" => "b"
+"c" => "c"
+!! end
+
+!! desc
+83. Choice failure, only report the rightmost error
+!! grammar
+start = "a" "b" / "a" "c" "d"
+!! cases
+"ace" => error { "type": "literal", "value": "d", "description": '"d"' }
+!! end
+
+!! desc
+84. Report expectations correctly with no or one alternative
+!! grammar
+start = "a"
+!! cases
+"ab" => error { type: "end", description: "end of input" }
+"b" => error { type: "literal", value: "a", description: '"a"' }
+!! end
+
+!! desc
+85. Report expectations correctly with multiple alternatives
+!! grammar
+start = "a" / "b" / "c"
+!! cases
+"d" => error [
+    { type: "literal", value: "a", description: '"a"' },
+    { type: "literal", value: "b", description: '"b"' },
+    { type: "literal", value: "c", description: '"c"' }
+  ]
+!! end
+
+!! desc
+86. Remove duplicates from expectations
+!! grammar
+start = "a" / "a" / "a"
+!! cases
+"b" => error { type: "literal", value: "a", description: '"a"' }
+!! end
+
+!! desc
+87. Sort expectations
+!! grammar
+start = "c" / "b" / "a"
+!! cases
+"d" => error [
+  { type: "literal", value: "a", description: '"a"' },
+  { type: "literal", value: "b", description: '"b"' },
+  { type: "literal", value: "c", description: '"c"' }
+]
+!! end
+
+!! desc
+88. Short boolean assignment
+!! grammar
+start = r<a>
+r = a:<a> "a" { return $a; }
+!! cases
+"a" => true
+"b" => error
+!! end
+
+!! desc
+89. Long boolean assignment and parameter assertion
+!! grammar
+start = "a" r<a=true> / "b" r<a=false>
+r = &<a> "a" / !<a> "b"
+!! cases
+"aa" => ["a", [undefined, "a"]]
+"bb" => ["b", [undefined, "b"]]
+"ab" => error {type: "literal", value: "a", description: '"a"'}
+"ba" => error {type: "literal", value: "b", description: '"b"'}
+!! end
+
+!! desc
+90. Integer assignment and increment
+!! grammar
+start = a<n=0>
+a = "a" n:<n> b:b<n++> { return ["a", $n, $b]; }
+b = "b" n:<n> c:c<n++> { return ["b", $n, $c]; }
+c = "c" n:<n> { return ["c", $n]; }
+!! cases
+"abc" => ["a", 0, ["b", 1, ["c", 2]]]
+!! end
+
+!! desc
+91. String assignment
+!! grammar
+start = r<s="s">
+r = "a" s:<s> { return $s; }
+!! cases
+"a" => "s"
+!! end
+
+!! desc
+92. Reference assignment, capture and intra-rule change
+!! grammar
+{ // PHP
+  function setRef(&$ref, $value) {
+    $ref = $value;
+  }
+}
+{ // JavaScript
+  function setRef(ref, value) {
+    ref.set(value);
+  }
+}
+start = main<&ref=1>
+main = a:getref setref b:getref ref:<ref> { return [$a, $b, $ref]; }
+getref = "a" ref:<ref> { return $ref; }
+setref = "b" ref:<&ref> { $this->setRef($ref, 2); }
+!! cases
+"aba" => [1, 2, 2]
+!! end
+
+!! desc
+93. Reference capture in a loop
+!! grammar
+{ // PHP
+  function setRef(&$ref, $value) {
+    $ref = $value;
+  }
+
+  function getRef(&$ref) {
+    return $ref;
+  }
+}
+{ // JavaScript
+  function setRef(ref, value) {
+    ref.set(value);
+  }
+  function getRef(ref) {
+    return ref.get();
+  }
+}
+start = main<&n=3>
+main = ("a" decref &<n>)*
+decref =
+  "" n:<&n>
+  {
+    $this->setRef($n, $this->getRef($n) - 1);
+    return "";
+  }
+!! cases
+"" => []
+"a" => [["a", "", undefined]]
+"aa" => [["a", "", undefined], ["a", "", undefined]]
+"aaa" => error
+!! end
+
+!! desc
+94. Uninitialized parameters of various types
+!! grammar
+{ // PHP
+  function getRef(&$ref) {
+    return $ref;
+  }
+}
+{ // JavaScript
+  function getRef(ref) {
+    return ref.get();
+  }
+}
+start = getparams setparams
+getparams =
+  boolParam:<boolParam> intParam:<intParam> stringParam:<stringParam>
+  refValueParam:<refParam> refRefParam:<&refParam>
+  {
+    return [$boolParam, $intParam, $stringParam, $refValueParam, $this->getRef($refRefParam)];
+  }
+setparams = dummy<boolParam=true> dummy<intParam=1> dummy<stringParam="x"> dummy<&refParam="x">
+dummy = ""
+!! cases
+"" => [[false, 0, "", null, null], ["", "", "", ""]]
+!! end
+
+!! desc
+95. Cache of reference transition
+!! grammar
+{ // PHP
+  function setRef(&$ref, $value) {
+    $ref = $value;
+  }
+}
+{ // JavaScript
+  function setRef(ref, value) {
+    ref.set(value);
+  }
+}
+Start = Main<&ref=0>
+Main = ClearRef SetRef GetRef ClearRef SetRef GetRef
+ClearRef = ref:<&ref> { $this->setRef($ref, 0); return 10;}
+SetRef = ref:<&ref> { $this->setRef($ref, 1); return 11; }
+GetRef = ref:<ref> "" { return $ref; }
+!! cases
+""  => [10, 11, 1, 10, 11, 1]
+!! end
+
+!! desc
+96. Short case-insensitive non-ASCII literal
+!! grammar
+start = "Δ"i
+!! cases
+"Δ" => "Δ"
+"δ" => "δ"
+"d" => error {type: "literal", value: "Δ", description: '"\\u0394"'}
+"" => error
+"δδ" => error
+"δd" => error
+!! end
+
+!! desc
+97. Long case-insensitive non-ASCII literal
+!! grammar
+start = "ΓΔΕ"i
+!! cases
+"γδε" => "γδε"
+"γΔε" => "γΔε"
+"ΓΔ" => error
+!! end

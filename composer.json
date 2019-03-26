@@ -4,7 +4,13 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "WikiPEG\\": "src"
+      "WikiPEG\\": "src",
+      "WikiPEG\\Tests\\": "tests/php"
     }
+  },
+  "require": {
+    "php": "^7.2",
+    "ext-json": "*",
+    "ext-mbstring": "*"
   }
 }

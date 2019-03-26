@@ -123,6 +123,8 @@ var options = {
   output:   "source",
   trace:    false,
   plugins:  [],
+  language: null,
+  commonLang: null,
 };
 
 while (args.length > 0 && isOption(args[0])) {
@@ -134,6 +136,10 @@ while (args.length > 0 && isOption(args[0])) {
 
     case "--php":
       options.language = "php";
+      break;
+
+    case '--common-lang':
+      options.commonLang = true;
       break;
 
     case '--class-name':
@@ -243,12 +249,16 @@ switch (args.length) {
       abort("Can't read from file \"" + inputFile + "\".");
     });
 
-    if (options.language === undefined) {
+    if (options.language === null) {
       if (/\.pegphp$/.test(inputFile)) {
         options.language = 'php';
       } else {
         options.language = 'javascript';
       }
+    }
+
+    if (/\.peg$/.test(inputFile) && options.commonLang === null) {
+      options.commonLang = true;
     }
 
     var extension = options.language === 'php' ? ".php" : ".js";
