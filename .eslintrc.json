@@ -67,7 +67,7 @@
       }
     },
     {
-      "files": "spec/**",
+      "files": "tests/jasmine/**",
       "rules": {
         "indent": "off",
         "no-console": "off"

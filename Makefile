@@ -6,7 +6,7 @@ WIKIPEG_VERSION = `cat $(VERSION_FILE)`
 
 LIB_DIR              = lib
 BIN_DIR              = bin
-SPEC_DIR             = spec
+SPEC_DIR             = tests/jasmine
 BENCHMARK_DIR        = benchmark
 NODE_MODULES_DIR     = node_modules
 NODE_MODULES_BIN_DIR = $(NODE_MODULES_DIR)/.bin
