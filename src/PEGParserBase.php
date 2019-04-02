@@ -196,11 +196,23 @@ abstract class PEGParserBase {
     $this->maxFailExpected[] = $expected;
   }
 
+  private function expandConsts($expected) {
+    $expanded = [];
+    foreach ($expected as $index) {
+      if (is_int($index)) {
+        $expanded[] = $this->consts[$index];
+      } else {
+        $expanded[] = $index;
+      }
+    }
+    return $expanded;
+  }
+
   private function buildMessage($expected, $found) {
     $expectedDescs = [];
 
-    foreach ($expected as $index) {
-      $expectedDescs[] = $this->consts[$index]['description'];
+    foreach ($expected as $info) {
+      $expectedDescs[] = $info['description'];
     }
     $lastDesc = array_pop($expectedDescs);
     if ($expectedDescs) {
@@ -219,9 +231,11 @@ abstract class PEGParserBase {
       $expected = array_unique($expected);
     }
 
+    $expandedExpected = $this->expandConsts($expected);
+
     return new SyntaxError(
-      $message !== null ? $message : $this->buildMessage($expected, $found),
-      $expected,
+      $message !== null ? $message : $this->buildMessage($expandedExpected, $found),
+      $expandedExpected,
       $found,
       $location
     );
