@@ -229,9 +229,12 @@ abstract class PEGParserBase {
     if ($expected !== null) {
       sort($expected);
       $expected = array_unique($expected);
+      $expandedExpected = $this->expandConsts($expected);
+      sort($expandedExpected);
+    } else {
+      $expandedExpected = null;
     }
 
-    $expandedExpected = $this->expandConsts($expected);
 
     return new SyntaxError(
       $message !== null ? $message : $this->buildMessage($expandedExpected, $found),
