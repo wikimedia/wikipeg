@@ -2,6 +2,7 @@
 
 namespace WikiPEG\Tests;
 
+use WikiPEG\Expectation;
 use WikiPEG\SyntaxError;
 
 class TestRunner {
@@ -26,7 +27,7 @@ class TestRunner {
     try {
       return $testFileParser->parse($text);
     } catch (SyntaxError $e) {
-      $this->error("Syntax error in \"$fileName\":" . $e->getLocationString() . ": " . $e->getMessage());
+      $this->error("Syntax error in \"$fileName\":{$e->location->start}: " . $e->getMessage());
       return [];
     }
   }
@@ -303,7 +304,13 @@ class TestRunner {
 
   private function assertIdentical($actual, $expected, $desc) {
     $this->totalCount++;
-    if ($actual !== $expected) {
+    if ($actual instanceof Expectation && $expected instanceof Expectation) {
+      $match = Expectation::compare( $actual, $expected) === 0;
+    } else {
+      $match = $actual === $expected;
+    }
+
+    if (!$match) {
       $this->error("Assertion failed: $desc.\n" .
         "Expected: " . $this->encode($expected) . "\n" .
         "Actual: " . $this->encode($actual));
@@ -315,8 +322,8 @@ class TestRunner {
   }
 
   private function assertError($actual, $expected) {
+    $this->totalCount++;
     if (!($actual instanceof SyntaxError)) {
-      $this->totalCount++;
       $this->error("Assertion failed: caught an exception which is not a SyntaxError.\n" .
         $actual->__toString());
       return 1;
@@ -324,7 +331,27 @@ class TestRunner {
       if (!isset($expected[0])) {
         $expected = [$expected];
       }
-      return $this->assertIdentical($actual->expected, $expected, 'expected matching error details');
+      $match = false;
+      if (count($actual->expected) === count($expected)) {
+        $match = true;
+        foreach ($expected as $i => $expectation) {
+          $match = $expectation['type'] === $actual->expected[$i]->type
+            && $expectation['description'] === $actual->expected[$i]->description
+            && ($expectation['value'] ?? null) === $actual->expected[$i]->value;
+          if (!$match) {
+            break;
+          }
+        }
+      }
+      if (!$match) {
+        $this->error("Assertion failed: expected matching error details.\n" .
+          "Expected: " . $this->encode($expected) . "\n" .
+          "Actual: " . $this->encode($actual->expected));
+        return 1;
+      } else {
+        $this->successCount++;
+        return 0;
+      }
     }
   }
 }

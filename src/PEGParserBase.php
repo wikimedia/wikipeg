@@ -14,7 +14,12 @@ abstract class PEGParserBase {
   protected $posDetailsCache;
   protected $maxFailPos;
   protected $maxFailExpected;
-  protected $consts;
+
+  /** @var array Associative arrays of expectation info */
+  protected $expectations;
+
+  /** @var Expectation[] */
+  private $expectationCache;
 
   /** @var Tracer */
   protected $tracer;
@@ -169,18 +174,14 @@ abstract class PEGParserBase {
     $startPosDetails = $this->computePosDetails($startPos);
     $endPosDetails = $this->computePosDetails($endPos);
 
-    return [
-      'start' => [
-        'offset' => $startPos,
-        'line' => $startPosDetails['line'],
-        'column' => $startPosDetails['column']
-      ],
-      'end' => [
-        'offset' => $endPos,
-        'line' => $endPosDetails['line'],
-        'column' => $endPosDetails['column']
-      ],
-    ];
+    return new LocationRange(
+      $startPos,
+      $startPosDetails['line'],
+      $startPosDetails['column'],
+      $endPos,
+      $endPosDetails['line'],
+      $endPosDetails['column']
+    );
   }
 
   protected function fail($expected) {
@@ -196,13 +197,16 @@ abstract class PEGParserBase {
     $this->maxFailExpected[] = $expected;
   }
 
-  private function expandConsts($expected) {
+  private function expandExpectations($expected) {
     $expanded = [];
     foreach ($expected as $index) {
       if (is_int($index)) {
-        $expanded[] = $this->consts[$index];
+        if (!isset($this->expectationCache[$index])) {
+          $this->expectationCache[$index] = new Expectation($this->expectations[$index]);
+        }
+        $expanded[] = $this->expectationCache[$index];
       } else {
-        $expanded[] = $index;
+        $expanded[] = new Expectation($index);
       }
     }
     return $expanded;
@@ -212,11 +216,11 @@ abstract class PEGParserBase {
     $expectedDescs = [];
 
     foreach ($expected as $info) {
-      $expectedDescs[] = $info['description'];
+      $expectedDescs[] = $info->description;
     }
     $lastDesc = array_pop($expectedDescs);
     if ($expectedDescs) {
-      $expectedDesc = implode(',', $expectedDescs) . ' or ' . $lastDesc;
+      $expectedDesc = implode(', ', $expectedDescs) . ' or ' . $lastDesc;
     } else {
       $expectedDesc = $lastDesc;
     }
@@ -229,8 +233,10 @@ abstract class PEGParserBase {
     if ($expected !== null) {
       sort($expected);
       $expected = array_unique($expected);
-      $expandedExpected = $this->expandConsts($expected);
-      sort($expandedExpected);
+      $expandedExpected = $this->expandExpectations($expected);
+      usort($expandedExpected, function ($a, $b) {
+        return Expectation::compare($a, $b);
+      });
     } else {
       $expandedExpected = null;
     }

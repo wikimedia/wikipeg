@@ -11,9 +11,9 @@ class CLASS_NAME extends \WikiPEG\PEGParserBase {
   // cache init
   /*CACHE_INIT*/
 
-  // consts
-  protected $consts = [
-    /*CONSTS*/
+  // expectations
+  protected $expectations = [
+    /*EXPECTATIONS*/
   ];
 
   // actions
@@ -45,7 +45,7 @@ class CLASS_NAME extends \WikiPEG\PEGParserBase {
       return $result;
     } else {
       if ($result !== self::$FAILED && $this->currPos < $this->inputLength) {
-        $this->fail(/*END_CONST*/);
+        $this->fail(/*END_EXPECTATION*/);
       }
       throw $this->buildParseException();
     }
