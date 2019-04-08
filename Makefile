@@ -36,7 +36,7 @@ all: parser test-parsers
 parser:
 	$(WIKIPEG) $(PARSER_SRC_FILE) $(PARSER_OUT_FILE)
 
-test: spec common-tests-php
+test: spec common-tests-php common-tests-js
 
 # Run the spec suite
 spec:
@@ -45,6 +45,9 @@ spec:
 common-tests-php:
 	$(PHP) tests/php/runCommonTests.php
 
+common-tests-js:
+	$(NODE) tests/javascript/runCommonTests.js
+
 # Run the benchmark suite
 benchmark:
 	$(BENCHMARK_RUN)
@@ -52,7 +55,7 @@ benchmark:
 # Run ESLint on the source
 eslint:
 	$(ESLINT)                                                                \
-	        --ignore-pattern=$(SPEC_DIR)/vendor                                    \
+	  --ignore-pattern=$(SPEC_DIR)/vendor                                    \
 	  $(LIB_DIR)                                                             \
 	  $(SPEC_DIR)                                                            \
 	  $(BENCHMARK_DIR)/*.js                                                  \
