@@ -115,9 +115,7 @@ class TestRunner {
       $this->restoreErrorHandler();
 
       if (!empty( $case['error'])) {
-        if (isset( $case['errorResult'])) {
-          $errorCount += $this->assertError( $e, $case['errorResult'] );
-        }
+        $errorCount += $this->assertError($e, $case['errorResult'] ?? null);
       } elseif (!empty( $case['ReferenceError'])) {
         $errorCount += $this->assertIdentical(
           $e instanceof PHPErrorException
@@ -127,9 +125,6 @@ class TestRunner {
         $errorCount += $this->assertIdentical($e->getMessage(), null, "expected no PHP error");
       } else {
         $errorCount += $this->assertIdentical($e, null, 'expected no exception');
-      }
-
-      if (isset($case['expected'])) {
         $errorCount += $this->assertIdentical($result, $case['expected'], "result mismatch");
       }
       if ($errorCount) {
@@ -327,6 +322,14 @@ class TestRunner {
       $this->error("Assertion failed: caught an exception which is not a SyntaxError.\n" .
         $actual->__toString());
       return 1;
+    } elseif ($expected === null) {
+      if ($actual === null) {
+        $this->error("Assertion failed: any error expected, no error received.");
+        return 1;
+      } else {
+        $this->successCount++;
+        return 0;
+      }
     } else {
       if (!isset($expected[0])) {
         $expected = [$expected];
