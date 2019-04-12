@@ -31,7 +31,7 @@ class TestRunner {
       return testFileParser.parse(testSource);
     } catch (e) {
       if (e.name === 'SyntaxError') {
-        error(`Syntax error in ${fileName}:${e.location.start.line}:${e.location.start.column}: ${e.message}`);
+        this.error(`Syntax error in ${fileName}:${e.location.start.line}:${e.location.start.column}: ${e.message}`);
         return [];
       } else {
         throw e;
