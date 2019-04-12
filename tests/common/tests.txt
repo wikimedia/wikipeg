@@ -478,13 +478,33 @@ start = "a"*
 !! end
 
 !! desc
+49a. Zero or more in discard mode
+!! grammar
+start = $"a"*
+!! cases
+"" => ""
+"a" => "a"
+"aa" => "aa"
+!! end
+
+!! desc
 50. One or more
 !! grammar
 start = "a"+
 !! cases
 "a" => ["a"]
 "aaa" => ["a", "a", "a"]
-"" => error
+"" => error {"type":"literal","value":"a","description":"\"a\""}
+!! end
+
+!! desc
+50a. One or more in discard mode
+!! grammar
+start = $"a"+
+!! cases
+"" => error {"type":"literal","value":"a","description":"\"a\""}
+"a" => "a"
+"aa" => "aa"
 !! end
 
 !! desc
