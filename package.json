@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "jasmine-node": "= 1.11.0",
-    "uglify-js":    "= 2.4.7",
     "eslint":       "= 5.14.1"
   },
   "engines":         {

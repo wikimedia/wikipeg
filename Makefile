@@ -23,7 +23,6 @@ VERSION_FILE = VERSION
 NODE          = node
 PHP           = php
 ESLINT        = $(NODE_MODULES_BIN_DIR)/eslint
-UGLIFYJS      = $(NODE_MODULES_BIN_DIR)/uglifyjs
 JASMINE_NODE  = $(NODE_MODULES_BIN_DIR)/jasmine-node
 WIKIPEG       = $(BIN_DIR)/wikipeg
 BENCHMARK_RUN = $(BENCHMARK_DIR)/run
