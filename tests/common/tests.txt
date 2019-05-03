@@ -1014,3 +1014,33 @@ Bar = ref:<ref> "" { return $ref; }
 !! cases
 "Ok Done" => ["Ok ",["Done",1]]
 !! end
+
+!! desc
+99. Reference variables should not be affected by failed rules
+!! grammar
+{ // PHP
+  function setRef(&$ref, $value) {
+    $ref = $value;
+  }
+}
+{ // JavaScript
+  function setRef(ref, value) {
+    ref.set(value);
+  }
+}
+start = main<&ref=1>
+main = a:getref
+       ( setref "c" / "bd")
+       b:getref
+       ( "e" setref / "ef" clearref / "eg" )
+       c:getref
+       ref:<ref> { return [$a, $b, $c, $ref]; }
+getref = "a" ref:<ref> { return $ref; }
+setref = "b" ref:<&ref> { $this->setRef($ref, 2); }
+clearref = ref:<&ref> { $this->setRef($ref, 1); }
+!! cases
+"abcaeba" => [1, 2, 2, 2]
+"abcaefa" => [1, 2, 1, 1]
+"abdaefa" => [1, 1, 1, 1]
+"abdaega" => [1, 1, 1, 1]
+!! end
