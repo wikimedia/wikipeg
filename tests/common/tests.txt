@@ -1003,3 +1003,14 @@ start = "ΓΔΕ"i
 "γΔε" => "γΔε"
 "ΓΔ" => error
 !! end
+
+!! desc
+98. Cycles in rule variable dependencies
+!! grammar
+Start = Main<&ref=1>
+Main = Foo / "Done" Bar
+Foo = "Ok " Main
+Bar = ref:<ref> "" { return $ref; }
+!! cases
+"Ok Done" => ["Ok ",["Done",1]]
+!! end
