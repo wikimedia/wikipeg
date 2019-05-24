@@ -30,8 +30,7 @@ class DefaultTracer implements Tracer {
   private function log($event) {
     print
       str_pad(
-        $event['location']['start']['line'] . ':' . $event['location']['start']['column'] . '-'
-        . $event['location']['end']['line'] . ':' . $event['location']['end']['column'] . ' ',
+        ''.$event['location'],
         20
       )
       . str_pad($event['type'], 10) . ' '
