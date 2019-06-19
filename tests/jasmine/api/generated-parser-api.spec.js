@@ -47,9 +47,10 @@ describe("generated parser API", function() {
 
     describe("tracing", function() {
       var parser = PEG.buildParser([
-            'start = a / b',
-            'a = "a"',
-            'b = "b"'
+            'Start = Alpha / OptionalAlpha Beta',
+            'Alpha = "a"',
+            'Beta = "b"',
+            'OptionalAlpha = Alpha?',
       ].join("\n"), { trace: true, noInlining: true });
 
       describe("default tracer", function() {
@@ -58,12 +59,15 @@ describe("generated parser API", function() {
 
           parser.parse("b");
 
-          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.enter start");
-          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.enter   a");
-          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.fail    a");
-          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.enter   b");
-          expect(console.log).toHaveBeenCalledWith("1:1-1:2             rule.match   b");
-          expect(console.log).toHaveBeenCalledWith("1:1-1:2             rule.match start");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.enter Start");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.enter   Alpha");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.fail    Alpha");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.enter   OptionalAlpha");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.fail      Alpha");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.match   OptionalAlpha");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:1             rule.enter   Beta");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:2             rule.match   Beta");
+          expect(console.log).toHaveBeenCalledWith("1:1-1:2             rule.match Start");
         });
       });
 
@@ -78,7 +82,7 @@ describe("generated parser API", function() {
 
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.enter',
-              rule:     'start',
+              rule:     'Start',
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 0, line: 1, column: 1 }
@@ -87,7 +91,7 @@ describe("generated parser API", function() {
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.enter',
-              rule:     'a',
+              rule:     'Alpha',
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 0, line: 1, column: 1 }
@@ -96,7 +100,7 @@ describe("generated parser API", function() {
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.fail',
-              rule:     'a',
+              rule:     'Alpha',
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 0, line: 1, column: 1 }
@@ -104,7 +108,42 @@ describe("generated parser API", function() {
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.enter',
-              rule:     'b',
+              rule:     'OptionalAlpha',
+              location: {
+                start: { offset: 0, line: 1, column: 1 },
+                end:   { offset: 0, line: 1, column: 1 }
+              },
+              args: { silence: false }
+            });
+            expect(tracer.trace).toHaveBeenCalledWith({
+              type:     'rule.enter',
+              rule:     'Alpha',
+              location: {
+                start: { offset: 0, line: 1, column: 1 },
+                end:   { offset: 0, line: 1, column: 1 }
+              },
+              args: { silence: false }
+            });
+            expect(tracer.trace).toHaveBeenCalledWith({
+              type:     'rule.fail',
+              rule:     'Alpha',
+              location: {
+                start: { offset: 0, line: 1, column: 1 },
+                end:   { offset: 0, line: 1, column: 1 }
+              }
+            });
+            expect(tracer.trace).toHaveBeenCalledWith({
+              type:     'rule.match',
+              rule:     'OptionalAlpha',
+              result:   null,
+              location: {
+                start: { offset: 0, line: 1, column: 1 },
+                end:   { offset: 0, line: 1, column: 1 }
+              }
+            });
+            expect(tracer.trace).toHaveBeenCalledWith({
+              type:     'rule.enter',
+              rule:     'Beta',
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 0, line: 1, column: 1 }
@@ -113,7 +152,7 @@ describe("generated parser API", function() {
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.match',
-              rule:     'b',
+              rule:     'Beta',
               result:   'b',
               location: {
                 start: { offset: 0, line: 1, column: 1 },
@@ -122,8 +161,8 @@ describe("generated parser API", function() {
             });
             expect(tracer.trace).toHaveBeenCalledWith({
               type:     'rule.match',
-              rule:     'start',
-              result:   'b',
+              rule:     'Start',
+              result:   [null, 'b'],
               location: {
                 start: { offset: 0, line: 1, column: 1 },
                 end:   { offset: 1, line: 1, column: 2 }

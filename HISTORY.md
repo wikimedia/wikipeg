@@ -14,6 +14,7 @@
 * Bug fix to default array creation for sequence rules
 * New options to PEG compiler: `allowLoops`, `commonLang`,
   `noInlining`.
+* Remove unnecessary failure-reporting checks (T224086)
 
 ## 5.0.0 (2025-04-28)
 * Improve function and property documentation

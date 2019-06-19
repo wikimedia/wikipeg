@@ -1207,3 +1207,52 @@ setref = val:<v> ref:<&ref> { $this->setRef($ref, $val); }
 !! cases
 "cdegi" => 1
 !! end
+
+!! desc
+114. Error reporting from inside zero_or_more
+!! grammar
+start = "/*" ( !"*/" . )* "*/"
+!! cases
+"/* x" => error [{"type":"any","description":"any character"},{"type":"literal","value":"*/","description":"\"*/\""}]
+"/* x *" => error [{"type":"any","description":"any character"},{"type":"literal","value":"*/","description":"\"*/\""}]
+!! end
+
+!! desc
+115. Error reporting from inside zero_or_more (subrule)
+!! grammar
+start = "/*" ( comment_char )* "*/"
+comment_char = !"*/" .
+!! cases
+"/* x" => error [{"type":"any","description":"any character"},{"type":"literal","value":"*/","description":"\"*/\""}]
+"/* x *" => error [{"type":"any","description":"any character"},{"type":"literal","value":"*/","description":"\"*/\""}]
+!! end
+
+!! desc
+116. Error reporting from inside optional
+!! grammar
+start = "apple" "banana"? "carrot"
+!! cases
+"apple" => error [{"type":"literal","value":"banana","description":"\"banana\""},{"type":"literal","value":"carrot","description":"\"carrot\""}]
+!! end
+
+!! desc
+117. Error reporting from inside optional (subrules 1)
+!! grammar
+start = apple banana? carrot
+apple = "apple"
+banana = "banana"
+carrot = "carrot"
+!! cases
+"apple" => error [{"type":"literal","value":"banana","description":"\"banana\""},{"type":"literal","value":"carrot","description":"\"carrot\""}]
+!! end
+
+!! desc
+118. Error reporting from inside optional (subrules 2)
+!! grammar
+start = apple banana carrot
+apple = "apple"
+banana = "banana"?
+carrot = "carrot"
+!! cases
+"apple" => error [{"type":"literal","value":"banana","description":"\"banana\""},{"type":"literal","value":"carrot","description":"\"carrot\""}]
+!! end
