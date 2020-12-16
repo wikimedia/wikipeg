@@ -2,3 +2,5 @@ browser/*
 examples/*.js
 examples/*.php
 node_modules/*
+composer.lock
+vendor/
