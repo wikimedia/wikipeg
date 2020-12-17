@@ -1,17 +1,17 @@
 {
-  "name":            "wikipeg",
-  "version":         "2.0.3",
-  "description":     "Parser generator for JavaScript and PHP",
-  "license":         "MIT",
-  "homepage":        "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
+  "name": "wikipeg",
+  "version": "2.0.3",
+  "description": "Parser generator for JavaScript and PHP",
+  "license": "MIT",
+  "homepage": "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
   "contributors": [
     {
-      "name":  "David Majda",
+      "name": "David Majda",
       "email": "david@majda.cz",
-      "url":   "http://majda.cz/"
+      "url": "http://majda.cz/"
     },
     {
-      "name":  "Tim Starling",
+      "name": "Tim Starling",
       "email": "tstarling@wikimedia.org"
     }
   ],
@@ -29,21 +29,21 @@
     "tools/build-browser.js",
     "package.json"
   ],
-  "main":            "lib/peg",
-  "bin":             "bin/wikipeg",
-  "scripts":         {
+  "main": "lib/peg",
+  "bin": "bin/wikipeg",
+  "scripts": {
     "eslint": "make eslint",
     "test": "make eslint && make test"
   },
-  "repository":      {
+  "repository": {
     "type": "git",
-    "url":  "https://gerrit.wikimedia.org/r/wikipeg"
+    "url": "https://gerrit.wikimedia.org/r/wikipeg"
   },
   "devDependencies": {
-    "jasmine-node": "= 1.11.0",
-    "eslint":       "= 5.14.1"
+    "jasmine-node": "3.0.0",
+    "eslint": "5.14.1"
   },
-  "engines":         {
+  "engines": {
     "node": ">= 6.0.0"
   }
 }
