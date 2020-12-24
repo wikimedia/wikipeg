@@ -22,6 +22,7 @@
     "semi": ["error", "always"],
     "no-control-regex": "off",
     "no-useless-escape": "off",
+    "no-prototype-builtins": "off",
     "no-trailing-spaces": "error"
   },
   "overrides": [
@@ -31,6 +32,7 @@
         "indent": "off",
         "no-trailing-spaces": "off",
         "no-unused-vars": "off",
+        "no-misleading-character-class": "off",
         "no-console": "off"
       }
     },
