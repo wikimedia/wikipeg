@@ -1,49 +1,49 @@
 {
-  "name": "wikipeg",
-  "version": "2.0.5",
-  "description": "Parser generator for JavaScript and PHP",
-  "license": "MIT",
-  "homepage": "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
-  "contributors": [
-    {
-      "name": "David Majda",
-      "email": "david@majda.cz",
-      "url": "http://majda.cz/"
-    },
-    {
-      "name": "Tim Starling",
-      "email": "tstarling@wikimedia.org"
-    }
-  ],
-  "files": [
-    "CHANGELOG.md",
-    "LICENSE",
-    "README.md",
-    "VERSION",
-    "bin/wikipeg",
-    "examples/*.pegjs",
-    "examples/*.pegphp",
-    "lib/**/*.js",
-    "lib/**/*.php",
-    "src/**/*.php",
-    "tools/build-browser.js",
-    "package.json"
-  ],
-  "main": "lib/peg",
-  "bin": "bin/wikipeg",
-  "scripts": {
-    "eslint": "make eslint",
-    "test": "make eslint && make test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://gerrit.wikimedia.org/r/wikipeg"
-  },
-  "devDependencies": {
-    "jasmine-node": "3.0.0",
-    "eslint": "7.16.0"
-  },
-  "engines": {
-    "node": ">= 6.0.0"
-  }
+	"name": "wikipeg",
+	"version": "2.0.5",
+	"description": "Parser generator for JavaScript and PHP",
+	"license": "MIT",
+	"homepage": "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
+	"contributors": [
+		{
+			"name": "David Majda",
+			"email": "david@majda.cz",
+			"url": "http://majda.cz/"
+		},
+		{
+			"name": "Tim Starling",
+			"email": "tstarling@wikimedia.org"
+		}
+	],
+	"files": [
+		"CHANGELOG.md",
+		"LICENSE",
+		"README.md",
+		"VERSION",
+		"bin/wikipeg",
+		"examples/*.pegjs",
+		"examples/*.pegphp",
+		"lib/**/*.js",
+		"lib/**/*.php",
+		"src/**/*.php",
+		"tools/build-browser.js",
+		"package.json"
+	],
+	"main": "lib/peg",
+	"bin": "bin/wikipeg",
+	"scripts": {
+		"eslint": "make eslint",
+		"test": "make eslint && make test"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://gerrit.wikimedia.org/r/wikipeg"
+	},
+	"devDependencies": {
+		"jasmine-node": "3.0.0",
+		"eslint": "7.16.0"
+	},
+	"engines": {
+		"node": ">= 6.0.0"
+	}
 }
