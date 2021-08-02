@@ -1,5 +1,5 @@
 <?php
-
+/*HEADER_COMMENT*/
 /*NAMESPACE*/
 
 /*INITIALIZER0*/
