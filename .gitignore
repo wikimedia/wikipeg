@@ -1,6 +1,10 @@
-browser/*
-examples/*.js
-examples/*.php
-node_modules/*
-composer.lock
-vendor/
+/browser/
+/examples/*.js
+/examples/*.php
+/node_modules/
+/coverage/
+/doc/
+/vendor/
+/.idea
+/.phpunit.result.cache
+/composer.lock
