@@ -9,15 +9,18 @@ if ( PHP_SAPI !== 'cli' ) {
 require __DIR__ . '/../../vendor/autoload.php';
 
 function runCommonTests() {
+	global $argv;
 	$runner = new TestRunner;
 	$options = getopt( 'v', [ 'id:', 'dump-code', 'help', 'node:' ] );
 	if ( isset( $options['help'] ) ) {
-		echo "Usage: php {$GLOBALS['argv'][0]} [..options...]\n" .
+		error_log(
+			"Usage: php {$argv[0]} [..options...]\n" .
 			"Available options:\n" .
 			"  --id=<id>       Specify either the test ID (e.g. 10) or the case ID (e.g. 10.4)\n" .
 			"  -v              Print something when tests start and stop\n" .
 			"  --dump-code     Write the generated PHP code for the selected tests to stdout\n" .
-			"  --node=<path>   Specify an alternative Node.js binary\n";
+			"  --node=<path>   Specify an alternative Node.js binary\n"
+		);
 
 		return false;
 	}

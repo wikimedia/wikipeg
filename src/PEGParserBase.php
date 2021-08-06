@@ -11,6 +11,7 @@ abstract class PEGParserBase {
 	protected $options;
 	protected $cache;
 
+	/** @var array<int,array{line:int,column:int,seenCR:bool}> */
 	protected $posDetailsCache;
 	protected $maxFailPos;
 	protected $maxFailExpected;
@@ -134,6 +135,10 @@ abstract class PEGParserBase {
 		return $value;
 	}
 
+	/**
+	 * @param int $pos
+	 * @return array{line:int,column:int,seenCR:bool}
+	 */
 	protected function computePosDetails( $pos ) {
 		if ( isset( $this->posDetailsCache[$pos] ) ) {
 			return $this->posDetailsCache[$pos];
@@ -198,6 +203,10 @@ abstract class PEGParserBase {
 		$this->maxFailExpected[] = $expected;
 	}
 
+	/**
+	 * @param array<int|array{type:string,value?:?string,description:string}> $expected
+	 * @return Expectation[]
+	 */
 	private function expandExpectations( $expected ) {
 		$expanded = [];
 		foreach ( $expected as $index ) {
@@ -239,11 +248,11 @@ abstract class PEGParserBase {
 				return Expectation::compare( $a, $b );
 			} );
 		} else {
-			$expandedExpected = null;
+			$expandedExpected = [];
 		}
 
 		return new SyntaxError(
-			$message !== null ? $message : $this->buildMessage( $expandedExpected, $found ),
+			$message ?? $this->buildMessage( $expandedExpected, $found ),
 			$expandedExpected,
 			$found,
 			$location

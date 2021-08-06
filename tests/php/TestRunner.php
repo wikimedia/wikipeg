@@ -17,6 +17,10 @@ class TestRunner {
 	private $codeLines;
 	private $nodeBinary;
 
+	private $serverProc;
+	private $serverIn;
+	private $serverOut;
+
 	private function readFile( $fileName ) {
 		$testFileParser = $this->makeTestFileParser();
 		$text = file_get_contents( $fileName );
@@ -69,11 +73,11 @@ class TestRunner {
 
 	private function installErrorHandler() {
 		set_error_handler( function ( ...$args ) {
-			$this->handleError( ...$args );
+			return $this->handleError( ...$args );
 		} );
 	}
 
-	private function handleError( $code, $message, $file, $lineNumber ) {
+	private function handleError( $code, $message, $file, $lineNumber ): bool {
 		$line = $this->codeLines[$lineNumber - 1] ?? '';
 		throw new PHPErrorException( "$message: line $lineNumber: $line" );
 	}
@@ -108,8 +112,8 @@ class TestRunner {
 			$this->installErrorHandler();
 			try {
 				$result = $parser->parse( $case['input'] );
-			} catch ( SyntaxError $e ) {
-			} catch ( PHPErrorException $e ) {
+			} catch ( SyntaxError | PHPErrorException $ee ) {
+				$e = $ee;
 			}
 			$this->restoreErrorHandler();
 
@@ -118,7 +122,7 @@ class TestRunner {
 			} elseif ( !empty( $case['ReferenceError'] ) ) {
 				$errorCount += $this->assertIdentical(
 					$e instanceof PHPErrorException
-					&& strpos( $e->getMessage() ?? '', "Undefined variable" ) !== false,
+					&& strpos( $e->getMessage(), "Undefined variable" ) !== false,
 					true, 'expected reference error' );
 			} elseif ( $e instanceof PHPErrorException ) {
 				$errorCount += $this->assertIdentical( $e->getMessage(), null, "expected no PHP error" );
@@ -209,7 +213,7 @@ class TestRunner {
 
 		try {
 			eval( $code );
-		} catch ( ParseError $e ) {
+		} catch ( \ParseError $e ) {
 			$this->error( "Error parsing generated PHP code: " . $e->getMessage() );
 			return null;
 		}
@@ -245,7 +249,7 @@ class TestRunner {
 
 		try {
 			eval( $code );
-		} catch ( ParseError $e ) {
+		} catch ( \ParseError $e ) {
 			$this->error( "Error parsing generated PHP code: " . $e->getMessage() );
 			return null;
 		}
@@ -319,7 +323,7 @@ class TestRunner {
 
 	private function assertError( $actual, $expected ) {
 		$this->totalCount++;
-		if ( !( $actual instanceof SyntaxError ) ) {
+		if ( $actual !== null && !( $actual instanceof SyntaxError ) ) {
 			$this->error( "Assertion failed: caught an exception which is not a SyntaxError.\n" .
 						 $actual->__toString() );
 			return 1;

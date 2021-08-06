@@ -11,7 +11,8 @@ class Expectation implements \JsonSerializable {
 	public $description;
 
 	/**
-	 * @param array $info The expectation array, which comes from the generated code, with keys:
+	 * @param array{type:string,value?:?string,description:string} $info
+	 *   The expectation array, which comes from the generated code, with keys:
 	 *   - type: The failed node type
 	 *   - value: The actual string which failed to match, may be absent for some node types
 	 *   - description: A readable description of the value
