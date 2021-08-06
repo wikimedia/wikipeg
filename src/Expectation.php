@@ -1,6 +1,6 @@
 <?php
 
-namespace WikiPEG;
+namespace Wikimedia\WikiPEG;
 
 class Expectation implements \JsonSerializable {
 	/** @var string */
@@ -53,3 +53,6 @@ class Expectation implements \JsonSerializable {
 		];
 	}
 }
+
+// Retain the old namespace for backwards compatibility.
+class_alias( Expectation::class, 'WikiPEG\Expectation' );

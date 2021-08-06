@@ -4,7 +4,7 @@
 
 /*INITIALIZER0*/
 
-class CLASS_NAME extends \WikiPEG\PEGParserBase {
+class CLASS_NAME extends \Wikimedia\WikiPEG\PEGParserBase {
 	// initializer
 	/*INITIALIZER*/
 
@@ -31,13 +31,13 @@ class CLASS_NAME extends \WikiPEG\PEGParserBase {
 			switch ( $startRule ) {
 				/*STREAM_CASES*/
 			default:
-				throw new \WikiPEG\InternalError( "Can't stream rule $startRule." );
+				throw new \Wikimedia\WikiPEG\InternalError( "Can't stream rule $startRule." );
 			}
 		} else {
 			switch ( $startRule ) {
 				/*START_CASES*/
 			default:
-				throw new \WikiPEG\InternalError( "Can't start parsing from rule $startRule." );
+				throw new \Wikimedia\WikiPEG\InternalError( "Can't start parsing from rule $startRule." );
 			}
 		}
 

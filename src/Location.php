@@ -1,6 +1,6 @@
 <?php
 
-namespace WikiPEG;
+namespace Wikimedia\WikiPEG;
 
 class Location implements \JsonSerializable {
 	/** @var int 0-based byte offset into the input string */
@@ -38,3 +38,6 @@ class Location implements \JsonSerializable {
 		];
 	}
 }
+
+// Retain the old namespace for backwards compatibility.
+class_alias( Location::class, 'WikiPEG\Location' );

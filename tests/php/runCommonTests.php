@@ -1,6 +1,6 @@
 <?php
 
-namespace WikiPEG\Tests;
+namespace Wikimedia\WikiPEG\Tests;
 
 if ( PHP_SAPI !== 'cli' ) {
 	exit;

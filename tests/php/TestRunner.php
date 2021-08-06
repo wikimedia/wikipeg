@@ -1,9 +1,9 @@
 <?php
 
-namespace WikiPEG\Tests;
+namespace Wikimedia\WikiPEG\Tests;
 
-use WikiPEG\Expectation;
-use WikiPEG\SyntaxError;
+use Wikimedia\WikiPEG\Expectation;
+use Wikimedia\WikiPEG\SyntaxError;
 
 class TestRunner {
 	private $success;
@@ -185,7 +185,7 @@ class TestRunner {
 	private function makeTestFileParser() {
 		$options = [
 			'input' => file_get_contents( __DIR__ . '/../common/TestFile.peg' ),
-			'className' => 'WikiPEG\\Tests\\TestFileParser',
+			'className' => 'Wikimedia\\WikiPEG\\Tests\\TestFileParser',
 		];
 		$code = $this->buildParser( $options );
 		eval( $code );
@@ -194,7 +194,7 @@ class TestRunner {
 
 	private function makeTestParser( $test ) {
 		$id = $test['id'];
-		$className = "WikiPEG\\Tests\\Test$id";
+		$className = "Wikimedia\\WikiPEG\\Tests\\Test$id";
 		if ( $test['cache'] ) {
 			$className .= 'C';
 		}
@@ -222,7 +222,7 @@ class TestRunner {
 
 	private function makeParser( $test ) {
 		$id = $test['id'];
-		$className = "WikiPEG\\Tests\\Test$id";
+		$className = "Wikimedia\\WikiPEG\\Tests\\Test$id";
 		if ( $test['cache'] ) {
 			$className .= 'C';
 		}

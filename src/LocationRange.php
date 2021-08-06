@@ -1,6 +1,6 @@
 <?php
 
-namespace WikiPEG;
+namespace Wikimedia\WikiPEG;
 
 class LocationRange implements \JsonSerializable {
 	/** @var Location */
@@ -37,3 +37,6 @@ class LocationRange implements \JsonSerializable {
 		];
 	}
 }
+
+// Retain the old namespace for backwards compatibility.
+class_alias( LocationRange::class, 'WikiPEG\LocationRange' );

@@ -1,6 +1,6 @@
 <?php
 
-namespace WikiPEG;
+namespace Wikimedia\WikiPEG;
 
 abstract class PEGParserBase {
 	protected static $FAILED;
@@ -289,3 +289,6 @@ abstract class PEGParserBase {
 
 	abstract public function parse( $input, $options = [] );
 }
+
+// Retain the old namespace for backwards compatibility.
+class_alias( PEGParserBase::class, 'WikiPEG\PEGParserBase' );

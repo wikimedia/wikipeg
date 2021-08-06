@@ -1,6 +1,6 @@
 <?php
 
-namespace WikiPEG\Tests;
+namespace Wikimedia\WikiPEG\Tests;
 
-class TestFileParser extends \WikiPEG\PEGParserBase {
+class TestFileParser extends \Wikimedia\WikiPEG\PEGParserBase {
 }

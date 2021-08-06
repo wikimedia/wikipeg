@@ -1,6 +1,6 @@
 <?php
 
-namespace WikiPEG;
+namespace Wikimedia\WikiPEG;
 
 class SyntaxError extends \Exception implements \JsonSerializable {
 	public $expected;
@@ -34,3 +34,6 @@ class SyntaxError extends \Exception implements \JsonSerializable {
 		];
 	}
 }
+
+// Retain the old namespace for backwards compatibility.
+class_alias( SyntaxError::class, 'WikiPEG\SyntaxError' );
