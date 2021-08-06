@@ -3,5 +3,5 @@
 namespace WikiPEG;
 
 interface Tracer {
-  function trace($event);
+	public function trace( $event );
 }

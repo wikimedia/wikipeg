@@ -5,49 +5,49 @@
 /*INITIALIZER0*/
 
 class CLASS_NAME extends \WikiPEG\PEGParserBase {
-  // initializer
-  /*INITIALIZER*/
+	// initializer
+	/*INITIALIZER*/
 
-  // cache init
-  /*CACHE_INIT*/
+	// cache init
+	/*CACHE_INIT*/
 
-  // expectations
-  protected $expectations = [
-    /*EXPECTATIONS*/
-  ];
+	// expectations
+	protected $expectations = [
+		/*EXPECTATIONS*/
+	];
 
-  // actions
-  /*ACTIONS*/
+	// actions
+	/*ACTIONS*/
 
-  // generated
-  /*GENERATED*/
+	// generated
+	/*GENERATED*/
 
-  public function parse($input, $options = []) {
-    $this->initInternal($input, $options);
-    $startRule = $options['startRule'] ?? '(DEFAULT)';
-    $result = null;
+	public function parse( $input, $options = [] ) {
+		$this->initInternal( $input, $options );
+		$startRule = $options['startRule'] ?? '(DEFAULT)';
+		$result = null;
 
-    if (!empty($options['stream'])) {
-      switch ($startRule) {
-        /*STREAM_CASES*/
-        default:
-          throw new \WikiPEG\InternalError("Can't stream rule $startRule.");
-      }
-    } else {
-      switch ($startRule) {
-        /*START_CASES*/
-        default:
-          throw new \WikiPEG\InternalError("Can't start parsing from rule $startRule.");
-      }
-    }
+		if ( !empty( $options['stream'] ) ) {
+			switch ( $startRule ) {
+				/*STREAM_CASES*/
+			default:
+				throw new \WikiPEG\InternalError( "Can't stream rule $startRule." );
+			}
+		} else {
+			switch ( $startRule ) {
+				/*START_CASES*/
+			default:
+				throw new \WikiPEG\InternalError( "Can't start parsing from rule $startRule." );
+			}
+		}
 
-    if ($result !== self::$FAILED && $this->currPos === $this->inputLength) {
-      return $result;
-    } else {
-      if ($result !== self::$FAILED && $this->currPos < $this->inputLength) {
-        $this->fail(/*END_EXPECTATION*/);
-      }
-      throw $this->buildParseException();
-    }
-  }
+		if ( $result !== self::$FAILED && $this->currPos === $this->inputLength ) {
+			return $result;
+		} else {
+			if ( $result !== self::$FAILED && $this->currPos < $this->inputLength ) {
+				$this->fail( /*END_EXPECTATION*/ );
+			}
+			throw $this->buildParseException();
+		}
+	}
 }
