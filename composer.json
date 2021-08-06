@@ -21,7 +21,8 @@
 	"scripts": {
 		"test": [
 			"parallel-lint . --exclude vendor --exclude node_modules",
-			"minus-x check ."
+			"minus-x check .",
+			"if [ 'x'$(which node) != 'x' ]; then php tests/php/runCommonTests.php ; fi"
 		],
 		"fix": [
 			"minus-x fix ."
