@@ -47,6 +47,11 @@ Options:
                                      to PEG.buildParser
       --extra-options-file <file>    file with additional options (in JSON
                                      format) to pass to PEG.buildParser
+      --header-comment-file <file>   file containing the comment to add at the top
+                                     of the generated file to document where it
+                                     comes from. Must contain all formatting
+                                     necessary for said comment in the target
+                                     language.
   -v, --version                      print version information and exit
   -h, --help                         print help and exit
 `);
@@ -208,6 +213,19 @@ while (args.length > 0 && isOption(args[0])) {
         abort("Can't read from file \"" + args[0] + "\".");
       }
       addExtraOptions(options, json);
+      break;
+
+    case "--header-comment-file":
+      nextArg();
+      if (args.length === 0) {
+        abort("Missing parameter of the --header-comment-file option.");
+      }
+      try {
+        var comment = fs.readFileSync(args[0]);
+      } catch(e) {
+        abort("Can't read from file \"" + args[0] + "\".");
+      }
+      options.headerComment = comment;
       break;
 
     case "-v":

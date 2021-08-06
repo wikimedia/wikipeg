@@ -201,7 +201,29 @@ describe("PEG.js API", function() {
           expect(eval(source).parse("a")).toBe("a");
         });
       });
+
+      describe("when |headerComment| is set to |/*\n * some comment\n */|", function() {
+        it("returns generated parser source code with that comment", function() {
+          var source = PEG.buildParser(grammar, { output: "source", headerComment: "/*\n * some comment\n */"});
+          expect(typeof source).toBe("string");
+          /* Accounts for the closure and directive that come before the header comment */
+          expect(source.indexOf("/*\n * some comment\n */\n")).toBe(31);
+        });
+      });
+
+      describe("when |headerComment| is set to |/*\n * some comment\n */| and |language| is set to |php|", function() {
+        it("returns generated php parser source code with that comment", function() {
+          var source = PEG.buildParser(grammar, {
+            output: "source",
+            headerComment: "/*\n * some comment\n */",
+            language: "php"
+          });
+          expect(typeof source).toBe("string");
+          expect(source.startsWith("<?php\n/*\n * some comment\n */\n")).toBe(true);
+        });
+      });
     });
+
 
     /* The |plugins| option is tested in plugin API specs. */
 
