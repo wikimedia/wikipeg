@@ -1,5 +1,7 @@
 # Release History
 
+## x.x.x (not yet released)
+
 ## 2.0.6 (2021-08-07)
 * Changed package namespace from WikiPEG to Wikimedia\WikiPEG to match
   composer package name. PHP's `class_alias` has been used so that existing
