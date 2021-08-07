@@ -1,7 +1,110 @@
-0.8.0
------
+# Release History
 
-Released: December 24, 2013
+## x.x.x (not yet released)
+* Changed package namespace from WikiPEG to Wikimedia\WikiPEG to match
+  composer package name. PHP's `class_alias` has been used so that existing
+  code using the old namespace will continue to work, but this is now
+  deprecated; it is expected that the next major release of WikiPEG will
+  remove the aliases.
+* Dependency updates.
+* Added a place in the template to add header comments.
+* Add phpcs and reformat PHP code to MediaWiki codestyle.
+* Add phan and fix minor issues.
+
+## 2.0.5 (2020-12-17)
+* Add PHP 8.0 support plus better CI tests for the PHP code.
+
+## 2.0.4 (2020-02-13)
+* Add  .gitattributes file to reduce downloaded cruft when imported as a
+  library.
+* Fix an obscure bug when the grammar contains cycles.
+* Fix DefaultTracer: the location is a LocationRange object now.
+
+## 2.0.3 (2019-04-25)
+* Move spec to tests/jasmine.
+* Fix to error construction.
+* Fix expectation sorting.
+* Another fix for the ast.initializer format change.
+* SyntaxError: correctly call parent constructor.
+* Fix encoding of astral plane characters in string literals (PHP backend)
+* Fix missing bracket in matchLiteral() (PHP backend)
+* Add cross-language testing and fix JS generator bugs identified by it.
+* Classes for Location, LocationRange, and Expectation (PHP backend)
+* Fix TestRunner error() call
+* Simplify loops zero_or_more and one_or_more
+* Fix caching of reference rule variables.
+* Better default keys for PHP and JS.
+
+## 2.0.2 (2019-04-25)
+There is no 2.0.2.
+
+## 2.0.1 (2019-03-28)
+Fix visitor for new multiple initializer feature
+
+ast.initializer is now the same as before if there are 0 or 1
+initializers, and an array if there are 2 or more. Update visitor for
+this. During development I initially made it be an array
+unconditionally, but I changed it to this more compatible format shortly
+before merging in order to make the tests pass, but neglected to update
+visitor.
+
+## 2.0.0 (2019-03-11)
+PHP backend
+
+Add a PHP code generation mode.
+
+Mapping overview:
+
+* File extension .pegphp hints to the binary that PHP is to be generated
+* Generated PHP code depends on a PSR-4 runtime library directory. I
+  used "src" for this, and moved the one file that was there out to
+  lib/.
+* JavaScript's enclosing scope is generally replaced by private and
+  protected members of the generated class or its parent. For example,
+  input becomes $this->input.
+* PHP's offsets are byte offsets, not UTF-16 offsets as in JS. Rules
+  such as . (any) return a full UTF-8 character, by means of our own
+  simple UTF-8 decoder.
+* The AST initializer is placed inside the definition of the generated
+  class, so private function declarations are appropriate, and
+  $this->input etc. is accessible.
+* Actions and semantic predicates become private methods.
+
+Changes:
+
+* Add ported examples for arithmetic and CSS
+* Remove the ability to run the generator in the browser. It is probably
+  still possible to use generated parsers in the browser.
+* Merge common-helpers, trace-helpers and wrapper.js into a single
+  template file. The helper files were mostly there to support the
+  browser mode.
+* Give actions a separate namespace from consts, since it's not
+  convenient in PHP to treat a function as a variable.
+* To run the start rule, instead of a hashtable of closures, use a
+  switch statement. This is simpler and works in both languages. The
+  hashtable of closures made more sense when it was possible to run
+  start rules directly, but now we have to supply default parameters for
+  them, so there was already an extra proxy closure.
+* Use template literals throughout, since they look very nice in this
+  use case and are presumably efficient.
+* For streaming mode, use a generator instead of an iterator, since PHP
+  has generators using similar syntax to ES6, whereas PHP's iterator
+  syntax is quite different.
+* Make the version 2.0.0.
+
+## 1.0.2 (2019-03-11)
+* Fix file list in package.json and increment version.
+
+## 1.0.0 (2019-02-08)
+* Call this WikiPEG 1.0.0.
+* Rename the binary and NPM project.
+* Remove documentation of the browser target since this is
+  now unmaintained.
+* Require Node.js 6+, like Parsoid. The upcoming feature commit will use
+  some ES6 features.
+* Retain the file extension .pegjs for now.
+
+## 0.8.0 (December 24, 2013)
 
 ### Big Changes
 
@@ -108,10 +211,7 @@ Released: December 24, 2013
 
   * Converted `CHANGELOG` to Markdown.
 
-0.7.0
------
-
-Released: April 18, 2012
+## 0.7.0 (April 18, 2012)
 
 ### Big Changes
 
@@ -197,10 +297,7 @@ Released: April 18, 2012
 
   * Improved `README.md`.
 
-0.6.2
------
-
-Released: August 20, 2011
+## 0.6.2 (August 20, 2011)
 
 ### Small Changes
 
@@ -208,19 +305,13 @@ Released: August 20, 2011
 
   * Fixed typo in JavaScript example grammar.
 
-0.6.1
------
-
-Released: April 14, 2011
+## 0.6.1 (April 14, 2011)
 
 ### Small Changes
 
   * Use `--ascii` option when generating a minified version.
 
-0.6.0
------
-
-Released: April 14, 2011
+## 0.6.0 (April 14, 2011)
 
 ### Big Changes
 
@@ -266,10 +357,7 @@ Released: April 14, 2011
 
   * Rewrote `README.md`.
 
-0.5.1
------
-
-Released: November 28, 2010
+## 0.5.1 (November 28, 2010)
 
 ### Small Changes
 
@@ -283,10 +371,7 @@ Released: November 28, 2010
 
   * Fixed incorrect variable name on two places.
 
-0.5
----
-
-Released: June 10, 2010
+## 0.5 (June 10, 2010)
 
 ### Big Changes
 
@@ -337,10 +422,7 @@ Released: June 10, 2010
 
   * Improved `README.md`.
 
-0.4
----
-
-Released: April 17, 2010
+## 0.4 (April 17, 2010)
 
 ### Big Changes
 
@@ -379,10 +461,7 @@ Released: April 17, 2010
 
   * Internal code improvements.
 
-0.3
----
-
-Released: March 14, 2010
+## 0.3 (March 14, 2010)
 
   * Wrote `README`.
 
@@ -407,17 +486,11 @@ Released: March 14, 2010
 
   * Internal code improvements.
 
-0.2.1
------
-
-Released: March 8, 2010
+## 0.2.1 (March 8, 2010)
 
   * Added `pegjs-` prefix to the name of the minified runtime file.
 
-0.2
----
-
-Released: March 8, 2010
+## 0.2 (March 8, 2010)
 
   * Added `Rakefile` that builds minified runtime using Google Closure Compiler
     API.
@@ -425,9 +498,6 @@ Released: March 8, 2010
   * Removed trailing commas in object initializers (Google Closure does not like
     them).
 
-0.1
----
-
-Released: March 8, 2010
+## 0.1 (March 8, 2010)
 
   * Initial release.
