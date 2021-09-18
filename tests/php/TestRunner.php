@@ -72,11 +72,20 @@ class TestRunner {
 	}
 
 	private function installErrorHandler() {
+		// @phan-suppress-next-line PhanTypeMismatchArgumentInternal
 		set_error_handler( function ( ...$args ) {
-			return $this->handleError( ...$args );
+			$this->handleError( ...$args );
 		} );
 	}
 
+	/**
+	 * @param int $code
+	 * @param string $message
+	 * @param string $file
+	 * @param int $lineNumber
+	 * @throws PHPErrorException
+	 * @return never
+	 */
 	private function handleError( $code, $message, $file, $lineNumber ): bool {
 		$line = $this->codeLines[$lineNumber - 1] ?? '';
 		throw new PHPErrorException( "$message: line $lineNumber: $line" );
@@ -294,6 +303,10 @@ class TestRunner {
 		$this->success = false;
 	}
 
+	/**
+	 * @param string $message
+	 * @return never
+	 */
 	private function fatal( $message ) {
 		throw new FatalTestException( $message );
 	}

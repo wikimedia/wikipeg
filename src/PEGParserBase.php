@@ -69,6 +69,10 @@ abstract class PEGParserBase {
 		return $this->computeLocation( $this->savedPos, $this->currPos );
 	}
 
+	/**
+	 * @param string $description
+	 * @return never
+	 */
 	protected function expected( $description ) {
 		throw $this->buildException(
 			null,
@@ -78,6 +82,10 @@ abstract class PEGParserBase {
 		);
 	}
 
+	/**
+	 * @param string $message
+	 * @return never
+	 */
 	protected function error( $message ) {
 		throw $this->buildException(
 			$message,
