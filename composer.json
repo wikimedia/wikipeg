@@ -33,7 +33,7 @@
 			"parallel-lint . --exclude vendor --exclude node_module",
 			"phpunit",
 			"covers-validator",
-			"phpcs -sp",
+			"@phpcs",
 			"@phan",
 			"minus-x check .",
 			"if [ 'x'$(which node) != 'x' ]; then php tests/php/runCommonTests.php ; fi"
@@ -42,8 +42,9 @@
 		"cover": "phpunit --coverage-html coverage",
 		"update-history": "update-history patch",
 		"fix": [
-			"phpcbf",
-			"minus-x fix ."
-		]
+			"minus-x fix .",
+			"phpcbf"
+		],
+		"phpcs": "phpcs -sp"
 	}
 }
