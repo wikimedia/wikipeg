@@ -40,8 +40,8 @@
 		"url": "https://gerrit.wikimedia.org/r/wikipeg"
 	},
 	"devDependencies": {
-		"jasmine-node": "3.0.0",
-		"eslint": "7.16.0"
+		"eslint": "8.9.0",
+		"jasmine-node": "3.0.0"
 	},
 	"engines": {
 		"node": ">= 6.0.0"
