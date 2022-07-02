@@ -45,7 +45,7 @@ class Expectation implements \JsonSerializable {
 	 * Emit a JSON serialization similar to JS, for testing
 	 * @return array
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return [
 			'type' => $this->type,
 			'value' => $this->value,

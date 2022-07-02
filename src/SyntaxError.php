@@ -24,7 +24,7 @@ class SyntaxError extends \Exception implements \JsonSerializable {
 	 * JSON serialization similar to the JavaScript SyntaxError, for testing
 	 * @return array
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return [
 			'name' => 'SyntaxError',
 			'message' => $this->message,
