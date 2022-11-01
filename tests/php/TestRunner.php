@@ -74,6 +74,7 @@ class TestRunner {
 	private function installErrorHandler() {
 		// @phan-suppress-next-line PhanTypeMismatchArgumentInternal
 		set_error_handler( function ( ...$args ) {
+			// @phan-suppress-next-line PhanParamTooFewUnpack
 			$this->handleError( ...$args );
 		} );
 	}
