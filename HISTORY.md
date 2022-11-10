@@ -1,6 +1,6 @@
 # Release History
 
-## x.x.x (not yet released)
+## 3.0.0 (2022-11-10)
 * Drop class aliases for old \WikiPEG namespace.
 * Bump minimum required PHP version to 7.4.3.
 * Dependency updates (ansi-regex, eslint, minimatch; mediawiki-codesniffer,
