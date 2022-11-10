@@ -297,6 +297,3 @@ abstract class PEGParserBase {
 
 	abstract public function parse( $input, $options = [] );
 }
-
-// Retain the old namespace for backwards compatibility.
-class_alias( PEGParserBase::class, 'WikiPEG\PEGParserBase' );

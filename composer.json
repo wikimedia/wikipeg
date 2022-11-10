@@ -4,7 +4,6 @@
 	"license": "MIT",
 	"autoload": {
 		"psr-4": {
-			"WikiPEG\\": "src/",
 			"Wikimedia\\WikiPEG\\": "src/"
 		}
 	},
