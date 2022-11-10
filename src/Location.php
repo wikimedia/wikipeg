@@ -30,6 +30,7 @@ class Location implements \JsonSerializable {
 	 * Emit a JSON serialization similar to JS, for testing
 	 * @return array
 	 */
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize(): array {
 		return [
 			'offset' => $this->offset,
