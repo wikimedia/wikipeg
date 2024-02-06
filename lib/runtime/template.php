@@ -4,6 +4,20 @@
 
 /*INITIALIZER0*/
 
+/*CACHE_ENTRY_BEGIN*/
+class CLASS_NAMECacheEntry {
+	public $nextPos;
+	public $result;
+/*CACHE_ENTRY_DECLARE*/
+
+	public function __construct( $nextPos, $result/*CACHE_ENTRY_ARGS*/ ) {
+		$this->nextPos = $nextPos;
+		$this->result = $result;
+/*CACHE_ENTRY_INIT*/
+	}
+}
+/*CACHE_ENTRY_END*/
+
 class CLASS_NAME extends \Wikimedia\WikiPEG\PEGParserBase {
 	// initializer
 	/*INITIALIZER*/
