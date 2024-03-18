@@ -9,23 +9,23 @@ class DefaultTracer implements Tracer {
 
 	public function trace( $event ) {
 		switch ( $event['type'] ) {
-		case 'rule.enter':
-			$this->log( $event );
-			$this->indentLevel++;
-			break;
+			case 'rule.enter':
+				$this->log( $event );
+				$this->indentLevel++;
+				break;
 
-		case 'rule.match':
-			$this->indentLevel--;
-			$this->log( $event );
-			break;
+			case 'rule.match':
+				$this->indentLevel--;
+				$this->log( $event );
+				break;
 
-		case 'rule.fail':
-			$this->indentLevel--;
-			$this->log( $event );
-			break;
+			case 'rule.fail':
+				$this->indentLevel--;
+				$this->log( $event );
+				break;
 
-		default:
-			throw new InvalidArgumentException( "Invalid event type {$event['type']}" );
+			default:
+				throw new InvalidArgumentException( "Invalid event type {$event['type']}" );
 		}
 	}
 

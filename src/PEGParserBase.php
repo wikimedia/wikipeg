@@ -165,7 +165,8 @@ abstract class PEGParserBase {
 		while ( $p < $pos ) {
 			$ch = self::charAt( $this->input, $p );
 			if ( $ch === "\n" ) {
-				if ( !$details['seenCR'] ) { $details['line']++;
+				if ( !$details['seenCR'] ) {
+					$details['line']++;
 				}
 				$details['column'] = 1;
 				$details['seenCR'] = false;
