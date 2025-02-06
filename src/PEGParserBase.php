@@ -47,7 +47,7 @@ abstract class PEGParserBase {
 			'location' => $this->computeLocation( $startPos, $startPos ),
 			'args' => $argMap
 		] );
-		$result = call_user_func_array( $parseFunc, $args );
+		$result = $parseFunc( ...$args );
 		if ( $result !== self::$FAILED ) {
 			$this->tracer->trace( [
 				'type' => 'rule.match',
