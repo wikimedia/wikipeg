@@ -3,7 +3,7 @@
 namespace Wikimedia\WikiPEG\Tests;
 
 if ( PHP_SAPI !== 'cli' ) {
-	exit;
+	exit( 0 );
 }
 
 require __DIR__ . '/../../vendor/autoload.php';
