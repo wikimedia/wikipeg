@@ -6,22 +6,26 @@ use Wikimedia\WikiPEG\Expectation;
 use Wikimedia\WikiPEG\SyntaxError;
 
 class TestRunner {
-	private $success;
-	private $longContext;
-	private $shortContext;
-	private $verbose;
-	private $targetId;
-	private $dumpCode;
-	private $successCount;
-	private $totalCount;
-	private $codeLines;
-	private $nodeBinary;
+	private bool $success;
+	private string $longContext;
+	private string $shortContext;
+	private bool $verbose;
+	private ?string $targetId;
+	private bool $dumpCode;
+	private int $successCount = 0;
+	private int $totalCount = 0;
+	/** @var string[] */
+	private array $codeLines;
+	private string $nodeBinary;
 
+	/** @var resource|false */
 	private $serverProc;
+	/** @var resource|false */
 	private $serverIn;
+	/** @var resource|false */
 	private $serverOut;
 
-	private function readFile( $fileName ) {
+	private function readFile( string $fileName ): array {
 		$testFileParser = $this->makeTestFileParser();
 		$text = file_get_contents( $fileName );
 		if ( $text === false ) {
@@ -36,7 +40,7 @@ class TestRunner {
 		}
 	}
 
-	public function runFile( $fileName, array $options = [] ) {
+	public function runFile( string $fileName, array $options = [] ): bool {
 		$this->verbose = isset( $options['v'] );
 		$this->targetId = $options['id'] ?? null;
 		$this->dumpCode = isset( $options['dump-code'] );
@@ -96,7 +100,7 @@ class TestRunner {
 		restore_error_handler();
 	}
 
-	private function runTest( $test ) {
+	private function runTest( array $test ) {
 		$this->setErrorContext( $test );
 		$parser = null;
 
@@ -180,7 +184,10 @@ class TestRunner {
 		}
 	}
 
-	private function buildParser( $options ) {
+	/**
+	 * @param mixed $options
+	 */
+	private function buildParser( $options ): string {
 		$this->checkServerStatus();
 		fwrite( $this->serverIn, json_encode( $options ) . "\n" );
 		$result = fgets( $this->serverOut );
@@ -202,7 +209,8 @@ class TestRunner {
 		return new TestFileParser;
 	}
 
-	private function makeTestParser( $test ) {
+	/** @return mixed */
+	private function makeTestParser( array $test ) {
 		$id = $test['id'];
 		$className = "Wikimedia\\WikiPEG\\Tests\\Test$id";
 		if ( $test['cache'] ) {
@@ -230,7 +238,8 @@ class TestRunner {
 		return new $className;
 	}
 
-	private function makeParser( $test ) {
+	/** @return mixed */
+	private function makeParser( array $test ) {
 		$id = $test['id'];
 		$className = "Wikimedia\\WikiPEG\\Tests\\Test$id";
 		if ( $test['cache'] ) {
@@ -266,18 +275,18 @@ class TestRunner {
 		return new $className;
 	}
 
-	private function getCaseId( $test, $caseIndex ) {
+	private function getCaseId( array $test, int $caseIndex ): string {
 		$cache = $test['cache'] ? '.cache' : '';
 		return $test['id'] . $cache . '.' . ( $caseIndex + 1 );
 	}
 
-	private function checkIdFilter( array $test, int $caseIndex ) {
+	private function checkIdFilter( array $test, int $caseIndex ): bool {
 		return $this->targetId === null
 							 || strval( $test['id'] ) === $this->targetId
 							 || $this->getCaseId( $test, $caseIndex ) === $this->targetId;
 	}
 
-	private function setErrorContext( $test, $caseIndex = null ) {
+	private function setErrorContext( ?array $test, ?int $caseIndex = null ) {
 		if ( $test ) {
 			if ( $caseIndex !== null ) {
 				$caseId = $this->getCaseId( $test, $caseIndex );
@@ -293,13 +302,13 @@ class TestRunner {
 		}
 	}
 
-	private function info( $message ) {
+	private function info( string $message ) {
 		if ( $this->verbose ) {
 			print $this->shortContext . $message . "\n";
 		}
 	}
 
-	private function error( $message ) {
+	private function error( string $message ) {
 		print $this->longContext . $message . "\n\n";
 		$this->success = false;
 	}
@@ -312,11 +321,19 @@ class TestRunner {
 		throw new FatalTestException( $message );
 	}
 
-	private function encode( $data ) {
+	/**
+	 * @param mixed $data
+	 */
+	private function encode( $data ): string {
 		return json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 	}
 
-	private function assertIdentical( $actual, $expected, $desc ) {
+	/**
+	 * @param mixed $actual
+	 * @param mixed $expected
+	 * @param string $desc
+	 */
+	private function assertIdentical( $actual, $expected, $desc ): int {
 		$this->totalCount++;
 		if ( $actual instanceof Expectation && $expected instanceof Expectation ) {
 			$match = Expectation::compare( $actual, $expected ) === 0;
@@ -335,7 +352,11 @@ class TestRunner {
 		}
 	}
 
-	private function assertError( $actual, $expected ) {
+	/**
+	 * @param mixed $actual
+	 * @param mixed $expected
+	 */
+	private function assertError( $actual, $expected ): int {
 		$this->totalCount++;
 		if ( $actual !== null && !( $actual instanceof SyntaxError ) ) {
 			$this->error( "Assertion failed: caught an exception which is not a SyntaxError.\n" .
