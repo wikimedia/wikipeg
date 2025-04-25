@@ -5,7 +5,7 @@ namespace Wikimedia\WikiPEG;
 use InvalidArgumentException;
 
 class DefaultTracer implements Tracer {
-	private int $indentLevel = 0;
+	protected int $indentLevel = 0;
 
 	public function trace( array $event ): void {
 		switch ( $event['type'] ) {
@@ -29,7 +29,7 @@ class DefaultTracer implements Tracer {
 		}
 	}
 
-	private function log( array $event ) {
+	protected function log( array $event ) {
 		print str_pad(
 			'' . $event['location'],
 			20
@@ -40,7 +40,7 @@ class DefaultTracer implements Tracer {
 			. "\n";
 	}
 
-	private function formatArgs( ?array $argMap ): string {
+	protected function formatArgs( ?array $argMap ): string {
 		if ( !$argMap ) {
 			return '';
 		}
