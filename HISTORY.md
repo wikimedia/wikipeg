@@ -1,12 +1,17 @@
 # Release History
 
 ## x.x.x (not yet released)
+* Improve function and property documentation
+* Mark some DefaultTracer methods as protected
+* PHP dependency updates (mediawiki-codesniffer, php-parallel-lint, minus-x,
+  phpunit, mediawiki-phan-config)
+* JS dependency updates (eslint, requirejs, cross-spawn)
 
 ## 4.0.0 (2024-03-04)
 * Use a class instead of an assoc array for cache entry
 * Switch phan to special library mode
-* PHP dependency updates (eslint, mediawiki-codesniffer, mediawiki-phan-config, phpunit)
-* JS dependency updates (word-wrap)
+* PHP dependency updates (mediawiki-codesniffer, mediawiki-phan-config, phpunit)
+* JS dependency updates (eslint, word-wrap)
 
 ## 3.0.0 (2022-11-10)
 * Drop class aliases for old \WikiPEG namespace.
