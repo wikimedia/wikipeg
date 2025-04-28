@@ -1,13 +1,17 @@
 # Release History
 
-## x.x.x (not yet released)
-
-## 4.0.1 (2025-04-28)
+## 5.0.0 (2025-04-28)
 * Improve function and property documentation
 * Mark some DefaultTracer methods as protected
 * PHP dependency updates (mediawiki-codesniffer, php-parallel-lint, minus-x,
   phpunit, mediawiki-phan-config)
 * JS dependency updates (eslint, requirejs, cross-spawn)
+
+## 4.0.2 (2025-04-28)
+* Same as 4.0.0
+
+## 4.0.1 (2025-04-28)
+* Unpublished.
 
 ## 4.0.0 (2024-03-04)
 * Use a class instead of an assoc array for cache entry
