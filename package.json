@@ -1,6 +1,6 @@
 {
 	"name": "wikipeg",
-	"version": "4.0.0",
+	"version": "4.0.2",
 	"description": "Parser generator for JavaScript and PHP",
 	"license": "MIT",
 	"homepage": "https://gerrit.wikimedia.org/r/plugins/gitiles/wikipeg/",
