@@ -1,5 +1,7 @@
 # Release History
 
+## x.x.x (not yet released)
+
 ## 5.0.0 (2025-04-28)
 * Improve function and property documentation
 * Mark some DefaultTracer methods as protected
