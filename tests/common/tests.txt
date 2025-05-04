@@ -1044,3 +1044,115 @@ clearref = ref:<&ref> { $this->setRef($ref, 1); }
 "abdaefa" => [1, 1, 1, 1]
 "abdaega" => [1, 1, 1, 1]
 !! end
+
+!! desc
+100. One or more character class in discard mode (optimization)
+!! grammar
+start = "x" $([abcd]+) "x"
+!! cases
+"xx" => error { "type": "class", "value": "[abcd]", "description": "[abcd]" }
+"xax" => ["x", "a", "x"]
+"xabcdabcdx" => ["x", "abcdabcd", "x"]
+!! end
+
+!! desc
+101. One or more character class in non-discard mode (optimization)
+!! grammar
+start = "x" [abcd]+ "x"
+!! cases
+"xx" => error { "type": "class", "value": "[abcd]", "description": "[abcd]" }
+"xax" => ["x", ["a"], "x"]
+"xabcdabcdx" => ["x", ["a","b","c","d","a","b","c","d"], "x"]
+!! end
+
+!! desc
+102. One or more "everything" character class in discard mode (optimization)
+!! grammar
+start = "x" $[^]+ ("x"/"")
+!! cases
+"x" => error
+"xabcdx" => [ "x", "abcdx", "" ]
+!! end
+
+!! desc
+103. One or more "everything" character class in non-discard mode (optimization)
+!! grammar
+start = "x" [^]+ ("x"/"")
+!! cases
+"x" => error
+"xabcdx" => [ "x", [ "a", "b", "c", "d", "x" ], "" ]
+!! end
+
+!! desc
+104. One or more "nothing" character class in discard mode (optimization)
+!! grammar
+start = "x" $[]+
+!! cases
+"x" => error { "type": "class", "value": "[]", "description": "[]" }
+"xy" => error { "type": "class", "value": "[]", "description": "[]" }
+!! end
+
+!! desc
+105. One or more "nothing" character class in non-discard mode (optimization)
+!! grammar
+start = "x" []+
+!! cases
+"x" => error { "type": "class", "value": "[]", "description": "[]" }
+"xy" => error { "type": "class", "value": "[]", "description": "[]" }
+!! end
+
+!! desc
+106. Zero or more character class in discard mode (optimization)
+!! grammar
+start = "x" $([abcd]*) "x"
+!! cases
+"xx" => ["x", "", "x"]
+"xax" => ["x", "a", "x"]
+"xabcdabcdx" => ["x", "abcdabcd", "x"]
+!! end
+
+!! desc
+107. Zero or more character class in non-discard mode (optimization)
+!! grammar
+start = "x" [abcd]* "x"
+!! cases
+"xx" => ["x", [], "x"]
+"xax" => ["x", ["a"], "x"]
+"xabcdabcdx" => ["x", ["a","b","c","d","a","b","c","d"], "x"]
+!! end
+
+!! desc
+108. Zero or more "everything" character class in discard mode (optimization)
+!! grammar
+start = "x" $[^]* ("x"/"")
+!! cases
+"x" => [ "x", "", "" ]
+"xabcdx" => [ "x", "abcdx", "" ]
+!! end
+
+!! desc
+109. Zero or more "everything" character class in non-discard mode (optimization)
+!! grammar
+start = "x" [^]* ("x"/"")
+!! cases
+"x" => [ "x", [], "" ]
+"xabcdx" => [ "x", [ "a", "b", "c", "d", "x" ], "" ]
+!! end
+
+!! desc
+110. Zero or more "nothing" character class in discard mode (optimization)
+!! grammar
+start = "x" $[]*
+!! cases
+"x" => [ "x", "" ]
+"xy" => error
+!! end
+
+!! desc
+111. Zero or more "nothing" character class in non-discard mode (optimization)
+!! grammar
+start = "x" []*
+!! cases
+"x" => [ "x", [] ]
+"xy" => error
+!! end
