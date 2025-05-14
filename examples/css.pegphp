@@ -288,13 +288,16 @@ nmchar
   / nonascii
   / escape
 
+nmchars
+  = $[_a-z0-9-]i+ / $[\x80-\uFFFF]+ / escape
+
 string1
-  = '"' chars:([^\n\r\f\\"] / "\\" nl:nl { return ""; } / escape)* '"' {
+  = '"' chars:($[^\n\r\f\\"]+ / "\\" nl:nl { return ""; } / escape)* '"' {
       return implode("", $chars);
     }
 
 string2
-  = "'" chars:([^\n\r\f\\'] / "\\" nl:nl { return ""; } / escape)* "'" {
+  = "'" chars:($[^\n\r\f\\']+ / "\\" nl:nl { return ""; } / escape)* "'" {
       return implode("", $chars);
     }
 
@@ -302,12 +305,10 @@ comment
   = "/*" [^*]* "*"+ ([^/*] [^*]* "*"+)* "/"
 
 ident
-  = prefix:$"-"? start:nmstart chars:nmchar* {
-      return $prefix . $start . implode("", $chars);
-    }
+  = $( "-"? nmstart nmchars* )
 
 name
-  = chars:nmchar+ { return implode("", $chars); }
+  = $( nmchars+ )
 
 num
   = [+-]? ([0-9]+ / [0-9]* "." [0-9]+) ("e" [+-]? [0-9]+)? {
@@ -319,13 +320,13 @@ string
   / string2
 
 url
-  = chars:([!#$%&*-\[\]-~] / nonascii / escape)* { return implode("", $chars); }
+  = chars:($[!#$%&*-\[\]-~]+ / nonascii / escape)* { return implode("", $chars); }
 
 plain_ws
   = [ \t\r\n\f]+
 
 w
-  = plain_ws?
+  = [ \t\r\n\f]*
 
 nl
   = "\n"
