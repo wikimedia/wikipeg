@@ -97,7 +97,15 @@ object to `PEG.buildParser`. The following options are supported:
      (default: `"javascript"`)
   * `cache` — if `true`, makes the parser cache results, avoiding exponential
     parsing time in pathological cases but making the parser slower (default:
-    `false`)  
+    `false`)
+  * `allowLoops` — if `true`, disables "infinite loop checking", which
+    looks for rules like `""*` which can match an infinite number of
+    times. Disabling this check can be helpful if it uncovers false
+    positives -- matches which can not be empty for reasons outside
+    its analysis.
+  * `commonLang` — if `true`, performs some simple modifications to
+    action clauses to make it possible to write test cases that work
+    in both javascript and PHP.
   * `cacheInitHook` and `cacheRuleHook` — functions to generate custom cache
     control code
   * `allowedStartRules` — rules the parser will be allowed to start parsing from
