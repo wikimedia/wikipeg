@@ -1,6 +1,7 @@
 # Release History
 
 ## x.x.x (not yet released)
+* Bump minimum required PHP version to 8.1
 * Zero-or-more or One-or-more repetitions of character classes are now
   optimized using a regular expression match of multiple characters,
   which can greatly increase performance.
