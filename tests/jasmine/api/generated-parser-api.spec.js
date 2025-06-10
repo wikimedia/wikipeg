@@ -50,7 +50,7 @@ describe("generated parser API", function() {
             'start = a / b',
             'a = "a"',
             'b = "b"'
-          ].join("\n"), { trace: true });
+      ].join("\n"), { trace: true, noInlining: true });
 
       describe("default tracer", function() {
         it("traces using console.log", function() {

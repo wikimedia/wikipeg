@@ -2,13 +2,16 @@
 
 ## x.x.x (not yet released)
 * Bump minimum required PHP version to 8.1
-* Zero-or-more or One-or-more repetitions of character classes are now
+* Zero-or-more or one-or-more repetitions of character classes are now
   optimized using a regular expression match of multiple characters,
   which can greatly increase performance.
+* Simple rules (character classes, repetitions of character classes)
+  are now inlined by default, which can reduce the memory used by the
+  backtracking cache and increase performance.
 * Backtracking out of a failed rule will now erase the effects on rule
   reference variables, in the same way that it restores the value of
   non-reference parser rule variables.
-* Add 'allowLoops' and 'commonLang' options to PEG compiler
+* Add 'allowLoops', 'commonLang', and 'noInlining' options to PEG compiler
 
 ## 5.0.0 (2025-04-28)
 * Improve function and property documentation

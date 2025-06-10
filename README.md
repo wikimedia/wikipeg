@@ -97,7 +97,7 @@ object to `PEG.buildParser`. The following options are supported:
      (default: `"javascript"`)
   * `cache` — if `true`, makes the parser cache results, avoiding exponential
     parsing time in pathological cases but making the parser slower (default:
-    `false`)
+    `false`). See the [Caching](#Caching) section below.
   * `allowLoops` — if `true`, disables "infinite loop checking", which
     looks for rules like `""*` which can match an infinite number of
     times. Disabling this check can be helpful if it uncovers false
@@ -106,6 +106,11 @@ object to `PEG.buildParser`. The following options are supported:
   * `commonLang` — if `true`, performs some simple modifications to
     action clauses to make it possible to write test cases that work
     in both javascript and PHP.
+  * `noInlining` — if `true`, disables inlining of simple character
+    classes and repeated character classes. This can be useful if you
+    are tracing execution or testing the parser and wish to see every
+    rule entry/exit, or need to explicitly manage caching. See
+	the [Caching](#Caching) section below.
   * `cacheInitHook` and `cacheRuleHook` — functions to generate custom cache
     control code
   * `allowedStartRules` — rules the parser will be allowed to start parsing from
@@ -505,6 +510,81 @@ in this way: assigning to it will have no effect outside the action in question.
 In JS this will expose the reference parameter "r" as an object with r.set(),
 r.get(). In PHP it will be a native reference such that {$r = 1;} will set
 the value of the reference in the declaration scope.
+
+Caching
+-------
+Note that caching makes PEG grammars behave somewhat differently from
+recursive descent parsers.  Consider the grammar:
+
+    start = "a" long_complicated_thing b
+          / "a" long_complicated_thing c
+          / "a" long_complicated_thing
+    
+    # this could be any costly rule, but this is the simplest example
+    # which will take time proportional to the file length
+    long_complicated_thing = $[^]*
+    b = "b"
+    c = "c"
+
+Without caching, the generated parser will match `"a"`, then scan the
+entire length of the string matching `long_complicated_thing`, then
+match the end-of-file to `"b"` and fail, return to the start of the
+string and do it again (scanning the entire length of the string),
+fail to match `"c"` and so on.
+
+When caching is enabled, the second time we try to match
+`long_complicated_thing` at position 2 in the string it will recognize
+that it has tried exactly this parse before and return the previous
+match from the cache.  This takes constant time instead of time
+proportional to the input string length.  This can be quite
+significant in a grammar that involves a lot of backtracking.
+
+There are some caveats, however!
+
+First, caching is relatively expensive, so it is only done at rule
+boundaries, like `long_complicated_thing`, `b`, and `c` above.  This
+is a departure from a "theoretical" packrat parser.
+
+Second, the memoization cache stores an entry for every nonterminal at
+every position is it attempted *whether the result is success or
+failure*.  In our example we allocate memory for cache entries for "b"
+and "c" even though they do not match. Writing rules which match
+single characters can easily result in excessive memory use if care is
+not taken.
+
+Consider two alterations to our example above.  First, consider inlining the
+`long_complicated_thing` rule like so:
+```
+    start = "a" $[^]* "b"
+          / "a" $[^]* "c"
+          / "a" $[^]*
+
+The grammar would then match exactly the same strings as before, but
+we would do no caching and each of the choice branches would scan to
+the end of the string.
+
+Alternatively, if we just moved the zero-or-more repetition operator
+like so:
+    start = "a" $long_complicated_thing* b
+          / "a" $long_complicated_thing* c
+          / "a" $long_complicated_thing*
+    
+    long_complicated_thing = [^]
+    b = "b"
+    c = "c"
+
+Now not only have we broken caching (each choice will scan to the
+end of the input string, matching long_complicated_thing as it goes)
+we're also going to allocate a cache entry for every character in the
+input string.  This can cause ballooning memory requirements for what
+look like simple inputs.
+
+By default wikipeg inlines "simple expressions", which are rules that
+match simple literals, character classes, or repeated character
+classes, possibly prefixed with the `$` operator.  This is primarily
+done to manage the memory cost of excessive caching of simple matches.
+For more predictable caching, you may wish to use the `noInlining`
+option.
 
 Requirements
 -------------
