@@ -1156,3 +1156,54 @@ start = "x" []*
 "x" => [ "x", [] ]
 "xy" => error
 !! end
+
+!! desc
+112. Reference variables in sequence with failed rules
+!! grammar
+{ // PHP
+  function setRef(&$ref, $value) {
+    $ref = $value;
+  }
+}
+{ // JavaScript
+  function setRef(ref, value) {
+    ref.set(value);
+  }
+}
+start = main<&ref=1,v=0>
+main = v1:subrule "x" v2:getref { return [$v1,$v2]; }
+     / v1:subrule "y" v2:getref { return [$v1,$v2]; }
+subrule = "c" ( "d" / "e" setref<v=2> ) "f" v1:getref ( "g" [g] / "h" setref<v=3> )
+   v2:getref { return [ $v1, $v2 ]; }
+
+getref = "a" ref:<ref> { return $ref; }
+setref = "b" val:<v> ref:<&ref> { $this->setRef($ref, $val); }
+!! cases
+"cdfaggaxa" => [[1,1],1]
+"cebfahbaya" => [[2,3],3]
+"cebfaggaya" => [[2,2],2]
+!! end
+
+!! desc
+113. Multiple level backtracking of references
+!! grammar
+{ // PHP
+  function setRef(&$ref, $value) {
+    $ref = $value;
+  }
+}
+{ // JavaScript
+  function setRef(ref, value) {
+    ref.set(value);
+  }
+}
+start = main<&ref=1,v=0>
+main = v1:subrule
+subrule = "c" ( "d" setref<v=2> ( "e" setref<v=3> "f" / "eg" ) "h" / "degi" )
+    v1:getref { return $v1; }
+
+getref = ref:<ref> { return $ref; }
+setref = val:<v> ref:<&ref> { $this->setRef($ref, $val); }
+!! cases
+"cdegi" => 1
+!! end
