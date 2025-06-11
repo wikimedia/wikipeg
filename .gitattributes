@@ -10,3 +10,10 @@
 /build/ export-ignore
 /examples/ export-ignore
 /package.json export-ignore
+
+# Auto detect text files and perform LF normalization
+* text=auto
+
+*.js text eol=lf
+*.peg* text eol=lf
+*.php text eol=lf
