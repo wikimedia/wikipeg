@@ -163,7 +163,7 @@ describe("PEG.js grammar parser", function() {
       semantic_not: stripLeaf,
       rule_ref:     stripLeaf,
       literal:      stripLeaf,
-      "class":      stripLeaf,
+      class:        stripLeaf,
       any:          stripLeaf
     });
 
