@@ -33,7 +33,8 @@
 	"bin": "bin/wikipeg",
 	"scripts": {
 		"eslint": "make eslint",
-		"test": "make eslint && make test"
+		"test": "make eslint && make test",
+		"rebuild": "make parser"
 	},
 	"repository": {
 		"type": "git",
