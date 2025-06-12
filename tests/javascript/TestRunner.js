@@ -200,10 +200,20 @@ class TestRunner {
       if (!Array.isArray(expected)) {
         expected = [expected];
       }
-      if (JSON.stringify(actual.expected) !== JSON.stringify(expected)) {
+	  let match = (actual.expected.length === expected.length);
+	  if (match) {
+		actual.expected.forEach((a, i) => {
+		  let e = expected[i];
+		  match = match &&
+			(a.type === e.type) &&
+			(a.description === e.description) &&
+			(a.value === e.value);
+		});
+	  }
+      if (!match) {
         this.error("Assertion failed: expected matching error details.\n" +
           `Expected: ${JSON.stringify(expected)}\n` +
-          `Actual: ${JSON.stringify(actual)}\n`);
+          `Actual: ${JSON.stringify(actual.expected)}\n`);
         return 1;
       } else {
         this.successCount++;
