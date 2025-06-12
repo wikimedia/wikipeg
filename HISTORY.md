@@ -13,8 +13,9 @@
   non-reference parser rule variables.
 * Bug fix to default array creation for sequence rules
 * New options to PEG compiler: `allowLoops`, `commonLang`,
-  `noInlining`.
+  `noInlining`, `allowUselessChoice`, and `noAlwaysMatch`.
 * Remove unnecessary failure-reporting checks (T224086)
+* Remove failure checks on rules which always match
 
 ## 5.0.0 (2025-04-28)
 * Improve function and property documentation

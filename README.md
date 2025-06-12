@@ -105,9 +105,13 @@ object to `PEG.buildParser`. The following options are supported:
     times. Disabling this check can be helpful if it uncovers false
     positives -- matches which can not be empty for reasons outside
     its analysis.
+  * `allowUselessChoice` — if `true`, disables the check for rules
+    which "always match" as other than the last element in a choice.
   * `commonLang` — if `true`, performs some simple modifications to
     action clauses to make it possible to write test cases that work
     in both javascript and PHP.
+  * `noAlwaysMatch` — if `true`, disables optimization of rules which
+     always match.
   * `noInlining` — if `true`, disables inlining of simple character
     classes and repeated character classes. This can be useful if you
     are tracing execution or testing the parser and wish to see every

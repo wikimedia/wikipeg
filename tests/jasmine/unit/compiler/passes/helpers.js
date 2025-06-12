@@ -44,7 +44,7 @@ beforeEach(function() {
 
       var options = arguments.length > 2 ? arguments[1] : {},
           details = arguments[arguments.length - 1],
-          ast     = PEG.parser.parse(grammar);
+          ast     = PEG.parser.parse(grammar, options);
 
       // options defaults should match those in compiler.js:compile()
       this.actual(ast, Object.assign({
@@ -68,11 +68,21 @@ beforeEach(function() {
       return matchDetails(ast, details);
     },
 
-    toReportError: function(grammar, details) {
-      var ast = PEG.parser.parse(grammar);
+    toReportError: function(grammar) {
+      var options = arguments.length > 2 ? arguments[1] : {},
+          details = arguments.length > 1 ? arguments[arguments.length - 1] : undefined,
+          ast = PEG.parser.parse(grammar, options);
 
       try {
-        this.actual(ast);
+        // options defaults should match those in compiler.js:compile()
+        this.actual(ast, Object.assign({
+          allowedStartRules: [ast.rules[0].name],
+          allowedStreamRules: [],
+          cache: false,
+          trace: false,
+          optimize: "speed",
+          output: "parser",
+		}, options));
 
         this.message = function() {
           return "Expected the pass to report an error "
