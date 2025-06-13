@@ -2,7 +2,6 @@
 
 "use strict";
 
-var util = require("util");
 var fs   = require("fs");
 var path = require("path");
 var PEG  = require("../lib/peg");
@@ -10,11 +9,11 @@ var PEG  = require("../lib/peg");
 /* Helpers */
 
 function printVersion() {
-  util.puts("WikiPEG " + PEG.VERSION);
+  console.log("WikiPEG " + PEG.VERSION);
 }
 
 function printHelp() {
-  util.puts(`Usage: wikipeg [options] [--] [<input_file>] [<output_file>]
+  console.log(`Usage: wikipeg [options] [--] [<input_file>] [<output_file>]
 
 Generates a parser from the PEG grammar specified in the <input_file> and writes
 it to the <output_file>.
@@ -66,7 +65,7 @@ function exitFailure() {
 }
 
 function abort(message) {
-  util.error(message);
+  console.error(message);
   exitFailure();
 }
 
