@@ -57,7 +57,9 @@ want to use the parser in browser environment.
 You can tweak the generated parser with several options:
 
   * `--cache` — makes the parser cache results, avoiding exponential parsing
-    time in pathological cases but making the parser slower
+    time in pathological cases but making the parser slower. See the
+    `cache` option to `PEG.buildParse` and the [Caching](#caching)
+    section below.
   * `--allowed-start-rules` — comma-separated list of rules the parser will be
     allowed to start parsing from (default: the first rule in the grammar)
   * `--plugin` — makes WikiPEG use a specified plugin (can be specified multiple
@@ -97,7 +99,7 @@ object to `PEG.buildParser`. The following options are supported:
      (default: `"javascript"`)
   * `cache` — if `true`, makes the parser cache results, avoiding exponential
     parsing time in pathological cases but making the parser slower (default:
-    `false`). See the [Caching](#Caching) section below.
+    `false`). See the [Caching](#caching) section below.
   * `allowLoops` — if `true`, disables "infinite loop checking", which
     looks for rules like `""*` which can match an infinite number of
     times. Disabling this check can be helpful if it uncovers false
@@ -110,7 +112,7 @@ object to `PEG.buildParser`. The following options are supported:
     classes and repeated character classes. This can be useful if you
     are tracing execution or testing the parser and wish to see every
     rule entry/exit, or need to explicitly manage caching. See
-	the [Caching](#Caching) section below.
+	the [Caching](#caching) section below.
   * `cacheInitHook` and `cacheRuleHook` — functions to generate custom cache
     control code
   * `allowedStartRules` — rules the parser will be allowed to start parsing from
@@ -239,14 +241,14 @@ expressions, up to the start rule. The generated parser returns start rule's
 match result when parsing is successful.
 
 One special case of parser expression is a *parser action* — a piece of
-JavaScript code inside curly braces (“{” and “}”) that takes match results of
+JavaScript code inside curly braces (`{` and `}`) that takes match results of
 some of the preceding expressions and returns a JavaScript value. This value
 is considered match result of the preceding expression (in other words, the
 parser action is a match result transformer).
 
 In our arithmetics example, there are many parser actions. Consider the action
 in expression `digits:[0-9]+ { return parseInt(digits.join(""), 10); }`. It
-takes the match result of the expression [0-9]+, which is an array of strings
+takes the match result of the expression `[0-9]+`, which is an array of strings
 containing digits, as its parameter. It joins the digits together to form a
 number and converts it to a JavaScript `number` object.
 
@@ -520,8 +522,8 @@ recursive descent parsers.  Consider the grammar:
           / "a" long_complicated_thing c
           / "a" long_complicated_thing
     
-    # this could be any costly rule, but this is the simplest example
-    # which will take time proportional to the file length
+    // this could be any costly rule, but this is the simplest example
+    // which will take time proportional to the file length
     long_complicated_thing = $[^]*
     b = "b"
     c = "c"
@@ -554,7 +556,7 @@ not taken.
 
 Consider two alterations to our example above.  First, consider inlining the
 `long_complicated_thing` rule like so:
-```
+
     start = "a" $[^]* "b"
           / "a" $[^]* "c"
           / "a" $[^]*
@@ -565,6 +567,7 @@ the end of the string.
 
 Alternatively, if we just moved the zero-or-more repetition operator
 like so:
+
     start = "a" $long_complicated_thing* b
           / "a" $long_complicated_thing* c
           / "a" $long_complicated_thing*
