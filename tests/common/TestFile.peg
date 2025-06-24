@@ -41,24 +41,6 @@
   }
 
   /**
-   * From each element of the input array, extract the element at the specified
-   * index and add the value to the result array.
-   *
-   * @param array $input
-   * @param int $index
-   * @return array
-   */
-  private function extractList($input, $index) {
-    $ret = [];
-    foreach ($input as $item) {
-      if (array_key_exists($index, $item)) {
-        $ret[] = $item[$index];
-      }
-    }
-    return $ret;
-  }
-
-  /**
    * Join an array of strings into a single string
    *
    * @param string[] $parts
@@ -114,14 +96,6 @@
     return ret;
   }
 
-  function extractList(input, index) {
-    let ret = [];
-    for (let i = 0; i < input.length; i++) {
-      ret.push(input[i][index]);
-    }
-    return ret;
-  }
-
   function join(parts) {
     return parts.join('');
   }
@@ -136,9 +110,7 @@
 }
 
 File =
-  VSpace tests:( Test VSpace )* {
-    return $this->extractList( $tests, 0 );
-  }
+  VSpace @( @Test VSpace )*
 
 Test =
   desc:Desc options:Options? grammar:Grammar cases:Cases end:End {
@@ -162,23 +134,16 @@ DescId = $[a-zA-Z0-9_]*
 DescLine = !"!!" text:$[^\r\n]* NL { return $this->join([$text, ' ']); }
 
 Options =
-  "!!" HSpace "options" HSpace NL HSpace opts:ObjectLiteral HSpace NL {
-    return $opts;
-  }
+  "!!" HSpace "options" HSpace NL HSpace @ObjectLiteral HSpace NL
 
 Grammar =
-  "!!" HSpace "grammar" HSpace NL text:TextToDelimiter {
-    return $text;
-  }
+  "!!" HSpace "grammar" HSpace NL @TextToDelimiter
 
 TextToDelimiter = $( ( !(NL "!!") . )* NL? )
 
 Cases =
-  "!!" HSpace "cases" HSpace NL
-  cases:(VSpace "" Case HSpace NL / HSpace NL )*
-  {
-    return $this->extractList($cases, 2);
-  }
+  "!!" HSpace "cases" (HSpace NL)+
+  @(VSpace @Case (HSpace NL)+ )*
 
 Case =
   input:StringLiteral VSpace "=>" VSpace result:Result
@@ -275,9 +240,9 @@ ArrayLiteral =
   {
     return [];
   }
-  / "[" VSpace first:Expression rest:( VSpace "," VSpace Expression )* VSpace ","? VSpace "]"
+  / "[" VSpace first:Expression rest:( VSpace "," VSpace @Expression )* VSpace ","? VSpace "]"
   {
-    return $this->mergeArrays([$first], $this->extractList($rest, 3));
+    return $this->mergeArrays([$first], $rest);
   }
 
 ObjectLiteral =
@@ -285,16 +250,13 @@ ObjectLiteral =
   {
     return $this->assocFromPairs([]);
   }
-  / "{" VSpace first:Property rest:( VSpace "," VSpace  Property )* VSpace ","? VSpace "}"
+  / "{" VSpace first:Property rest:( VSpace "," VSpace  @Property )* VSpace ","? VSpace "}"
   {
-    return $this->assocFromPairs([$first], $this->extractList($rest, 3));
+    return $this->assocFromPairs([$first], $rest);
   }
 
 Property =
-  name:(StringLiteral / UnquotedPropertyName) VSpace ":" VSpace value:Expression
-  {
-    return [$name, $value];
-  }
+  @(StringLiteral / UnquotedPropertyName) VSpace ":" VSpace @Expression
 
 UnquotedPropertyName = $IdentifierChar+
 
