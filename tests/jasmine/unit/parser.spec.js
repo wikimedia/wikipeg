@@ -450,7 +450,7 @@ describe("PEG.js grammar parser", function() {
     expect('start =//a\n"abcd"'  ).toParseAs(trivialGrammar);
     expect('start =//abc\n"abcd"').toParseAs(trivialGrammar);
 
-    expect('start =//\n@\n"abcd"').toFailToParse();
+    expect('start =//\n#\n"abcd"').toFailToParse();
   });
 
   /* Canonical Identifier is "a". */

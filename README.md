@@ -183,7 +183,7 @@ Let's look at example grammar that recognizes simple arithmetic expressions like
 
     primary
       = integer
-      / "(" additive:additive ")" { return additive; }
+      / "(" @additive ")"
 
     integer "integer"
       = digits:[0-9]+ { return parseInt(digits.join(""), 10); }
@@ -232,7 +232,7 @@ using a simple initializer.
 
     primary
       = integer
-      / "(" additive:additive ")" { return additive; }
+      / "(" @additive ")"
 
     integer "integer"
       = digits:[0-9]+ { return makeInteger(digits); }
@@ -250,6 +250,13 @@ example:
     containing matched part of the input.
   * An expression matching repeated occurrence of some subexpression produces a
     JavaScript array with all the matches.
+  * An expression matching a sequence of expressions produces a
+    JavaScript array with all the picked elements.
+	* If no matches are picked, all elements of the sequence will be
+      present in the array.
+    * If the pick operator (`@`) is used, only those elements which
+      are picked will be present.  If only one element is picked, it
+	  will be returned directly (not wrapped in a 1-element array).
 
 The match results propagate through the rules when the rule names are used in
 expressions, up to the start rule. The generated parser returns start rule's
@@ -401,6 +408,21 @@ can be accessed by action's JavaScript code.
 #### *expression<sub>1</sub>* *expression<sub>2</sub>* ...  *expression<sub>n</sub>*
 
 Match a sequence of expressions and return their match results in an array.
+Elements of the sequence can be picked by preceding them with the pick
+operator (`@`), and only those elements will be returned in the array.
+If only one element is picked, it is returned directly (not wrapped in
+an array).
+
+#### @ *expression*
+
+Pick the specified expression in a sequence to return.  See the
+description of a sequence expression above.
+
+Note that sequences with pick operators can be nested, for example:
+
+    foo = @"a" @("b" @"c" "d") "e"
+
+will return `["a", "c"]` if it matches.
 
 #### *expression* { *action* }
 

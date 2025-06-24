@@ -182,9 +182,10 @@ describe("compiler pass |analyzeFirst|", function() {
                   {
                     type: 'rule_ref',
                     name: 'abc',
+                    picked: true,
                   }
                 ],
-                returnLast: true,
+                numPicked: 1,
               },
             },
             {
@@ -205,9 +206,10 @@ describe("compiler pass |analyzeFirst|", function() {
                   },
                   {
                     type: 'choice',
+                    picked: true,
                   }
                 ],
-                returnLast: true,
+                numPicked: 1,
               },
             },
             {
@@ -255,9 +257,10 @@ describe("compiler pass |analyzeFirst|", function() {
                   {
                     type: 'rule_ref',
                     name: 'abc',
+                    picked: true,
                   }
                 ],
-                returnLast: true,
+                numPicked: 1,
               },
             },
             {
@@ -291,9 +294,10 @@ describe("compiler pass |analyzeFirst|", function() {
                             {
                               type: 'rule_ref',
                               name: 'optional',
+                              picked: true,
                             },
                           ],
-                          returnLast: true,
+                          numPicked: 1,
                         },
                       },
                       {

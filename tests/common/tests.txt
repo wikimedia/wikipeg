@@ -1307,3 +1307,67 @@ start = [Sk]i { return "yes"; } / . { return "no"; }
 "ß" => "no"
 "t" => "no"
 !! end
+
+!! desc
+123. Picked sequence element
+!! grammar
+start
+  = "1 " "a"  "b"  "c"  @"d" // single
+  / "2 " "a" @"b"  "c"  @"d" // multiple
+  / "? " "a" @"b"? "c"   "d"  // optional
+  / "* " "a" @"b"* "c"   "d"  // zero or more
+  / "+ " "a" @"b"+ "c"   "d"  // one or more
+  / "& " "a" @&"b" "b" "c" "d" // positive simple predicate
+  / "! " "a" @!"E" "b" "c" "d" // negative simple predicate
+!! cases
+"1 abcd" => "d"
+"2 abcd" => ["b", "d"]
+"? abcd" => "b"
+"? acd" => null
+"* acd" => []
+"* abcd" => ["b"]
+"* abbcd" => ["b","b"]
+"+ abcd" => ["b"]
+"+ abbcd" => ["b","b"]
+"& abcd" => undefined
+"! abcd" => undefined
+!! end
+
+!! desc
+124. Picked predicate does not interfere with label variables
+!! grammar
+start
+  = "1 " a:"a" @"b"   &{ return $a == "a"; }
+  / "2 " a:"a" @b:"b" &{ return $b == "b"; }
+  / "3 " a:"a" (@b:"b" "") { return $a; }
+!! cases
+"1 ab" => "b"
+"2 ab" => "b"
+"3 ab" => "a"
+!! end
+
+!! desc
+125. Picked predicate: label variables that is not picked is not returned
+!! grammar
+start = a:"a" @"b"
+!! cases
+"ab" => "b"
+!! end
+
+!! desc
+126. Nested pick operator
+!! grammar
+start = @"a" @("b" @"c" "d") "e"
+!! cases
+"abcde" => ["a","c"]
+!! end
+
+!! desc
+127. Inlining with pick
+!! grammar
+start = a:a? b:(":" @POSITION) { return [$a, $b]; }
+a = "a"
+POSITION = [a]
+!! cases
+":a" => [null,"a"]
+!! end

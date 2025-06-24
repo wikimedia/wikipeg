@@ -20,7 +20,9 @@
   case-insensitive matches, and the `caselessRestrict`
   option to modify this for ASCII ranges.
 * Optimize match failure where it is possible to determine that a
-  match is impossible by looking only at the first character of the match.
+  match is impossible by looking only at the first character of the
+  match.
+* Add picked operator (`@`).
 
 ## 5.0.0 (2025-04-28)
 * Improve function and property documentation

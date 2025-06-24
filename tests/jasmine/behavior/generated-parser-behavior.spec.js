@@ -723,7 +723,7 @@ describe("generated parser behavior", function() {
               '            return result;',
               '          }',
               'Value   = digits:[0-9]+     { return parseInt(digits.join(""), 10); }',
-              '        / "(" expr:Expr ")" { return expr; }'
+              '        / "(" @Expr ")"'
             ].join("\n"), options);
 
         /* The "value" rule */
@@ -787,7 +787,7 @@ describe("generated parser behavior", function() {
         var parser = PEG.buildParser([
               'C     = begin:Begin ns:N* end:End { return begin + ns.join("") + end; }',
               'N     = C',
-              '      / !Begin !End z:Z { return z; }',
+              '      / !Begin !End @Z',
               'Z     = .',
               'Begin = "(*"',
               'End   = "*)"'
