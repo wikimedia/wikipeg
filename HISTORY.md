@@ -23,7 +23,7 @@
   match is impossible by looking only at the first character of the
   match.
 * Add picked operator (`@`).
-* Add rule attributes: [name]
+* Add rule attributes: [name], [inline]
 * Deprecate old `rule "name" = ...` syntax for named rules in favor of
   `rule [name="name"] = ...`.
 

@@ -138,6 +138,74 @@ describe("compiler pass |inlineSimpleRules|", function() {
         }
       );
     });
+
+    it("should leave it alone if it has [inline=false]", function() {
+      expect(pass).toChangeAST(
+        [
+          'start = abc',
+          'abc = "a" simple "c"',
+          'simple [inline=false] = [b]'
+        ].join("\n"),
+        { allowedStartRules: ["start"] },
+        {
+          rules: [
+            {
+              name:       "start",
+              expression: { type: "rule_ref", name: "abc" }
+            },
+            {
+              name: "abc",
+              expression: {
+                type: "sequence",
+                elements: [
+                  { type: "literal", value: "a" },
+                  { type: "rule_ref", name: "simple" },
+                  { type: "literal", value: "c" },
+                ]
+              }
+            },
+            { name: "simple" }
+          ]
+        }
+      );
+	});
+  });
+
+  describe("when a complex rule has [inline=true]", function() {
+    it("updates references and removes it", function() {
+      expect(pass).toChangeAST(
+        [
+          'start = abc',
+          'abc = "a" complex* "c"',
+          'complex [inline] = [b] / [z] { return "q"; }'
+        ].join("\n"),
+        { allowedStartRules: ["start"] },
+        {
+          rules: [
+            {
+              name:       "start",
+              expression: { type: "rule_ref", name: "abc" }
+            },
+            {
+              name: "abc",
+              expression: {
+                type: "sequence",
+                elements: [
+                  { type: "literal", value: "a" },
+                  {
+                    type: "zero_or_more",
+                    expression: {
+                      type: "choice"
+                    },
+                  },
+                  { type: "literal", value: "c" },
+                ]
+              }
+            }
+          ]
+        }
+      );
+    });
   });
 
   describe("when a simple rule is listed in |allowedStartRules|", function() {

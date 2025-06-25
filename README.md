@@ -514,6 +514,16 @@ Aside from the content of error messages, providing a `name` attribute
 also affects *where* errors are reported, preferring to report failure
 at the named rule instead of inside it.
 
+#### [inline] *or* [inline=true]
+
+Forces inlining of the given rule, regardless of the status of the
+`noInlining` option.
+
+#### [inline=false]
+
+Prevents inlining of the given rule.
+
+
 Rule parameter syntax
 ---------------------
 
