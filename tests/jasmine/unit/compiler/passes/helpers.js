@@ -46,7 +46,15 @@ beforeEach(function() {
           details = arguments[arguments.length - 1],
           ast     = PEG.parser.parse(grammar);
 
-      this.actual(ast, options);
+      // options defaults should match those in compiler.js:compile()
+      this.actual(ast, Object.assign({
+        allowedStartRules: [ast.rules[0].name],
+        allowedStreamRules: [],
+        cache: false,
+        trace: false,
+        optimize: "speed",
+        output: "parser",
+      }, options));
 
       this.message = function() {
         return "Expected the pass "
