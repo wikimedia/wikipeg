@@ -141,10 +141,11 @@ File =
   }
 
 Test =
-  desc:Desc grammar:Grammar cases:Cases end:End {
+  desc:Desc options:Options? grammar:Grammar cases:Cases end:End {
     return $this->assocFromFlat([
       "id", $desc[0],
       "desc", $desc[1],
+      "options", $options,
       "grammar", $grammar,
       "cases", $cases,
       "end", $end
@@ -159,6 +160,11 @@ Desc =
 DescId = $[a-zA-Z0-9_]*
 
 DescLine = !"!!" text:$[^\r\n]* NL { return $this->join([$text, ' ']); }
+
+Options =
+  "!!" HSpace "options" HSpace NL HSpace opts:ObjectLiteral HSpace NL {
+    return $opts;
+  }
 
 Grammar =
   "!!" HSpace "grammar" HSpace NL text:TextToDelimiter {

@@ -216,7 +216,7 @@ class TestRunner {
 		if ( $test['cache'] ) {
 			$className .= 'C';
 		}
-		$options = [
+		$options = ( $test['options'] ?? [] ) + [
 			'input' => $test['grammar'],
 			'className' => $className,
 			'cache' => $test['cache'],

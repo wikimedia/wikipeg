@@ -118,12 +118,12 @@ class TestRunner {
   }
 
   makeTestParser(test) {
-    let code = PEG.buildParser(test.grammar, {
+    let code = PEG.buildParser(test.grammar, Object.assign({
       cache: test.cache,
       output: 'source',
       commonLang: true,
       language: 'javascript',
-    });
+    }, test.options || {}));
 
     if (this.dumpCode) {
       console.log(code);
