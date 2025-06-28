@@ -555,6 +555,12 @@ the empty string -- usually because of some predicate expression in
 the rule which is beyond WikiPEG's ability to analyze.  This can
 prevent false positives when WikiPEG checks for infinite loops.
 
+#### [unreachable]
+
+Marks a rule as unreachable. If the `allowUselessChoice` option is
+false, this attribute permits a reference to the rule in a choice even
+if a previous option in the choice appears to always match.
+
 Rule parameter syntax
 ---------------------
 
