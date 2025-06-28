@@ -548,6 +548,13 @@ effectively a no-op.
 If caching is enabled in the top-level WikiPEG options, this will
 prevent the given rule from being cached.
 
+#### [empty=false]
+
+Marks a node as non-nullable; that is, asserts that it cannot match
+the empty string -- usually because of some predicate expression in
+the rule which is beyond WikiPEG's ability to analyze.  This can
+prevent false positives when WikiPEG checks for infinite loops.
+
 Rule parameter syntax
 ---------------------
 
