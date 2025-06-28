@@ -11,7 +11,9 @@
 * Backtracking out of a failed rule will now erase the effects on rule
   reference variables, in the same way that it restores the value of
   non-reference parser rule variables.
-* Add 'allowLoops', 'commonLang', and 'noInlining' options to PEG compiler
+* Bug fix to default array creation for sequence rules
+* New options to PEG compiler: `allowLoops`, `commonLang`,
+  `noInlining`.
 
 ## 5.0.0 (2025-04-28)
 * Improve function and property documentation
