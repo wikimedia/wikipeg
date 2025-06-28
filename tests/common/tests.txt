@@ -1426,3 +1426,45 @@ integer "integer" = [0-9]+
 !! cases
 "1,2,a" => error [{"type":"end","description": "end of input"}]
 !! end
+
+!! desc
+133. Explicit cache control (cache=false)
+!! grammar
+{ // PHP
+  private $n = 0;
+  private function reset() { $this->n = 0; return true; }
+  private function inc() { return $this->n++; }
+}
+{ // JavaScript
+  var n = 0;
+  function reset() { n = 0; return true; }
+  function inc() { return n++; }
+}
+start = &{ return $this->reset(); } @first
+first = "a" @second "a" / "a" @second "b"
+second [cache=false] = " test " { return $this->inc(); }
+!! cases
+"a test a" => 0
+"a test b" => 1
+!! end
+
+!! desc
+134. Explicit cache control (cache=true)
+!! grammar
+{ // PHP
+  private $n = 0;
+  private function reset() { $this->n = 0; return true; }
+  private function inc() { return $this->n++; }
+}
+{ // JavaScript
+  var n = 0;
+  function reset() { n = 0; return true; }
+  function inc() { return n++; }
+}
+start = &{ return $this->reset(); } @first
+first = "a" @second "a" / "a" @second "b"
+second [cache=true] = " test " { return $this->inc(); }
+!! cases
+"a test a" => 0
+"a test b" => 0
+!! end

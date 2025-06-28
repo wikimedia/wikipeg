@@ -523,6 +523,30 @@ Forces inlining of the given rule, regardless of the status of the
 
 Prevents inlining of the given rule.
 
+#### [cache] *or* [cache=true]
+
+Turns on caching for the given rule, regardless of the status of the
+top-level `cache` option. This can be useful for enabling caching
+only on a few rules while leaving it mostly disabled.
+
+If caching is disabled in the top-level WikiPEG options but any rule
+has this attribute set to `true`, then caching will be enabled but all
+rules will default to `[cache=false]`.
+
+If caching is enabled in the WikiPEG options, then `[cache]` is
+effectively a no-op, since the default is to cache all rules.
+
+#### [cache=false]
+
+Turns off caching for the given rule, regardless of the status of the
+top-level `cache` option. This can be useful for selectively disabling
+caching on a few rules while leaving it mostly enabled.
+
+If caching is disabled in the top-level WikiPEG options, this is
+effectively a no-op.
+
+If caching is enabled in the top-level WikiPEG options, this will
+prevent the given rule from being cached.
 
 Rule parameter syntax
 ---------------------
