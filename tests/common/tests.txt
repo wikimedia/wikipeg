@@ -805,6 +805,8 @@ start = "a"
 
 !! desc
 85. Report expectations correctly with multiple alternatives
+!! options
+{ noOptimizeCharacterClass: true }
 !! grammar
 start = "a" / "b" / "c"
 !! cases
@@ -817,6 +819,8 @@ start = "a" / "b" / "c"
 
 !! desc
 86. Remove duplicates from expectations
+!! options
+{ noOptimizeCharacterClass: true }
 !! grammar
 start = "a" / "a" / "a"
 !! cases
@@ -825,6 +829,8 @@ start = "a" / "a" / "a"
 
 !! desc
 87. Sort expectations
+!! options
+{ noOptimizeCharacterClass: true }
 !! grammar
 start = "c" / "b" / "a"
 !! cases
@@ -1467,4 +1473,60 @@ second [cache=true] = " test " { return $this->inc(); }
 !! cases
 "a test a" => 0
 "a test b" => 0
+!! end
+
+!! desc
+135. Optimize choice of character classes
+!! grammar
+start = "1." @simple_choice / "2." @nested_choice / "3." @nested_inverted_choice
+simple_choice [inline=false] = [a-c] / [b-e]
+nested_choice [inline=false] = [a-c] / ("b" / "z")
+nested_inverted_choice [inline=false] = [^a-c] / ("b" / "z")
+!! cases
+"1.c" => "c"
+"1.e" => "e"
+"1.f" => error
+"1."  => error
+"2.a" => "a"
+"2.b" => "b"
+"2.d" => error
+"2.z" => "z"
+"2."  => error
+"3.a" => error
+"3.b" => "b"
+"3.c" => error
+"3.d" => "d"
+"3.z" => "z"
+"3."  => error
+!! end
+
+!! desc
+136. Result of negated test is `false` in PHP and `null` in JS
+     but `undefined` in test cases
+!! grammar
+start = !"xyz" ![x-z] "abc"
+!! cases
+"abc" => [ undefined, undefined, "abc" ]
+!! end
+
+!! desc
+137. Optimize sequence with negated character class
+!! grammar
+start = "1." @simple_subtract / "2." @repeat_subtract / "3." @picked
+simple_subtract [inline=false] = ![a-c] [b-e]
+repeat_subtract [inline=false] = ![a-c] !"e" [b-e]
+picked [inline=false] = (![a-c] !"e" @[b-e])+
+!! cases
+"1.a" => error
+"1.d" => [ undefined, "d" ]
+"1.f" => error
+"1."  => error
+"2.b" => error
+"2.d" => [ undefined, undefined, "d"]
+"2.e" => error
+"2."  => error
+"3.b" => error
+"3.dddd" => ["d", "d", "d", "d"]
+"3.e" => error
+"3."  => error
 !! end

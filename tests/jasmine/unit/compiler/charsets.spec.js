@@ -181,4 +181,49 @@ describe("charsets.classNode", function() {
       )).toHaveParts(['K', 'k', "\u212A"]);
     });
   });
+
+  describe(".subtract", function() {
+    it("handles non-overlapping ranges", function() {
+      expect(classNode.subtract(
+        build({ parts: [["A","C"]] }),
+        build({ parts: [["X","Z"]] })
+      )).toHaveParts([["A","C"]]);
+    });
+    it("handles overlapping ranges", function() {
+      expect(classNode.subtract(
+        build({ parts: [["A","C"]] }),
+        build({ parts: [["B","D"]] })
+      )).toHaveParts(["A"]);
+    });
+    it("handles non-overlapping inverted ranges", function() {
+      expect(classNode.subtract(
+        build({ parts: [["A","C"]], inverted: true }),
+        build({ parts: [["X","Z"]], inverted: true })
+      )).toHaveParts([["X","Z"]]);
+    });
+    it("handles overlapping inverted ranges", function() {
+      expect(classNode.subtract(
+        build({ parts: [["A","C"]], inverted: true }),
+        build({ parts: [["B","D"]], inverted: true })
+      )).toHaveParts(["D"]);
+    });
+    it("handles mixed inverted and uninverted ranges (1)", function() {
+      expect(classNode.subtract(
+        build({ parts: [["A","C"]], inverted: true }),
+        build({ parts: [["B","D"]], inverted: false })
+      )).toHaveInvertedParts([["A","D"]]);
+    });
+    it("handles mixed inverted and uninverted ranges (2)", function() {
+      expect(classNode.subtract(
+        build({ parts: [["B","D"]], inverted: false }),
+        build({ parts: [["A","C"]], inverted: true })
+      )).toHaveParts([["B","C"]]);
+    });
+    it("handles case-insensitive classes", function() {
+      expect(classNode.subtract(
+        build({ parts: ["k"], ignoreCase: true }),
+        build({ parts: [["a","z"]] })
+      )).toHaveParts(['K', "\u212A"]);
+    });
+  });
 });

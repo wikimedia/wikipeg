@@ -14,6 +14,7 @@ describe("generated parser behavior", function() {
       }
 
       result.noOptimizeFirstSet = true;
+      result.noOptimizeCharacterClass = true;
       return result;
     }
 
