@@ -1530,3 +1530,16 @@ picked [inline=false] = (![a-c] !"e" @[b-e])+
 "3.e" => error
 "3."  => error
 !! end
+
+!! desc
+138. Variable renaming during inlining
+!! options
+{ "noInlining": true, "noOptimizeFirstSet": true }
+!! grammar
+foo = a:one two b:three { return [$a,$b]; }
+one = $"1"
+two[inline] = a:"2" { return $a; }
+three = a:one (a:"2" "3" { return $a; }) { return $a; }
+!! cases
+"12123" => ["1","1"]
+!! end
