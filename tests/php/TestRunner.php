@@ -77,21 +77,18 @@ class TestRunner {
 
 	private function installErrorHandler() {
 		// @phan-suppress-next-line PhanTypeMismatchArgumentInternal
-		set_error_handler( function ( ...$args ) {
-			// @phan-suppress-next-line PhanParamTooFewUnpack
-			$this->handleError( ...$args );
+		set_error_handler( function ( $code, $message, $file, $lineNumber ) {
+			$this->handleError( $message, $lineNumber );
 		} );
 	}
 
 	/**
-	 * @param int $code
 	 * @param string $message
-	 * @param string $file
 	 * @param int $lineNumber
 	 * @throws PHPErrorException
 	 * @return never
 	 */
-	private function handleError( $code, $message, $file, $lineNumber ): bool {
+	private function handleError( $message, $lineNumber ): bool {
 		$line = $this->codeLines[$lineNumber - 1] ?? '';
 		throw new PHPErrorException( "$message: line $lineNumber: $line" );
 	}
@@ -316,6 +313,7 @@ class TestRunner {
 	/**
 	 * @param string $message
 	 * @return never
+	 * @throws FatalTestException
 	 */
 	private function fatal( $message ) {
 		throw new FatalTestException( $message );

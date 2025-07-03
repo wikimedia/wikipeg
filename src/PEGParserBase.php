@@ -79,6 +79,7 @@ abstract class PEGParserBase {
 	/**
 	 * @param string $description
 	 * @return never
+	 * @throws SyntaxError
 	 */
 	protected function expected( $description ) {
 		throw $this->buildException(
@@ -92,6 +93,7 @@ abstract class PEGParserBase {
 	/**
 	 * @param string $message
 	 * @return never
+	 * @throws SyntaxError
 	 */
 	protected function error( $message ) {
 		throw $this->buildException(
