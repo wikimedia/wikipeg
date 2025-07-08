@@ -146,6 +146,22 @@ abstract class PEGParserBase {
 		return $char;
 	}
 
+	public static function advanceChar( string $s, int &$byteOffset ): void {
+		if ( !isset( $s[$byteOffset] ) ) {
+			return;
+		}
+		$byte1 = ord( $s[$byteOffset++] );
+		if ( ( $byte1 & 0xc0 ) === 0xc0 ) {
+			$byteOffset++;
+		}
+		if ( ( $byte1 & 0xe0 ) === 0xe0 ) {
+			$byteOffset++;
+		}
+		if ( ( $byte1 & 0xf0 ) === 0xf0 ) {
+			$byteOffset++;
+		}
+	}
+
 	/**
 	 * @param mixed $value
 	 * @return mixed
