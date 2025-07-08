@@ -23,6 +23,9 @@
   match is impossible by looking only at the first character of the
   match.
 * Add picked operator (`@`).
+* Add rule attributes: [name]
+* Deprecate old `rule "name" = ...` syntax for named rules in favor of
+  `rule [name="name"] = ...`.
 
 ## 5.0.0 (2025-04-28)
 * Improve function and property documentation

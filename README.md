@@ -198,9 +198,12 @@ happens when the pattern matches successfully. A rule can also contain
 `integer` rule has a human-readable name). The parsing starts at the first rule,
 which is also called the *start rule*.
 
-A rule name must be a JavaScript identifier. It is followed by an equality sign
-(“=”) and a parsing expression. If the rule has a human-readable name, it is
-written as a JavaScript string between the name and separating equality sign.
+A rule name must be a JavaScript identifier. It is followed by an
+equals sign (“=”) and a parsing expression. If the rule has additional
+attributes, they are written between square brackets (“[” and “]”)
+between the rule name and the equals sign; see the “Rule attribute
+syntax” section below for more details.
+
 Rules need to be separated only by whitespace (their beginning is easily
 recognizable), but a semicolon (“;”) after the parsing expression is allowed.
 
@@ -475,6 +478,41 @@ Note that curly braces in the action code must be balanced.
 Try to match the first expression, if it does not succeed, try the second one,
 etc. Return the match result of the first successfully matched expression. If no
 expression matches, consider the match failed.
+
+Rule attribute syntax
+---------------------
+WikiPEG supports attaching attributes to rules which can affect their
+behavior.  The syntax is:
+
+    rule1 [attr1, attr2=false, attr3="string", ...] = nonterminal1 ... ;
+
+That is, attributes are comma-separated between square brackets
+between the rule name and the equals sign.  Attributes can have
+boolean, string, or integer values.  An attribute without a value
+is treated as shorthand for setting it to boolean `true`.
+
+The following attributes affect parsing:
+
+#### [name="*rule name*"]
+
+Provide a human-readable *rule name* for this rule.  For example, this
+production:
+
+    integer [name="simple number"] = [0-9]+
+
+will produce an error message like:
+
+    Expected simple number but "a" found.
+
+when parsing a non-number, referencing the human-readable name "simple
+number".  Without the human-readable name, WikiPEG uses a description
+of the character class that failed to match:
+
+    Expected [0-9] but "a" found.
+
+Aside from the content of error messages, providing a `name` attribute
+also affects *where* errors are reported, preferring to report failure
+at the named rule instead of inside it.
 
 Rule parameter syntax
 ---------------------

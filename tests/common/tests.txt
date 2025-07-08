@@ -1371,3 +1371,58 @@ POSITION = [a]
 !! cases
 ":a" => [null,"a"]
 !! end
+
+!! desc
+128. Named rules (example from README)
+!! grammar
+start = integer
+integer = [0-9]+
+!! cases
+"a" => error [{"type":"class","value":"[0-9]","description": "[0-9]"}]
+!! end
+
+!! desc
+129. Named rules (example from README, old syntax)
+!! options
+{ "noInlining": true, "noOptimizeFirstSet": true }
+!! grammar
+start = integer
+integer "simple number" = [0-9]+
+!! cases
+"a" => error [{"type":"other","description": "simple number"}]
+!! end
+
+!! desc
+130. Named rules (example from README, new syntax)
+!! options
+{ "noInlining": true, "noOptimizeFirstSet": true }
+!! grammar
+start = integer
+integer [name="simple number"] = [0-9]+
+!! cases
+"a" => error [{"type":"other","description": "simple number"}]
+!! end
+
+!! desc
+131. Named rules (example 2a from README)
+!! options
+{ "noInlining": true, "noOptimizeFirstSet": true }
+!! grammar
+start = seq
+seq = integer ("," integer)*
+integer "integer" = [0-9]+
+!! cases
+"1,2,a" => error [{"type":"other","description": "integer"}]
+!! end
+
+!! desc
+132. Named rules (example 2b from README)
+!! options
+{ "noInlining": true, "noOptimizeFirstSet": true }
+!! grammar
+start = seq
+seq "list of numbers" = integer ("," integer)*
+integer "integer" = [0-9]+
+!! cases
+"1,2,a" => error [{"type":"end","description": "end of input"}]
+!! end

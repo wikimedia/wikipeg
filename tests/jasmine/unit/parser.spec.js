@@ -50,18 +50,24 @@ describe("PEG.js grammar parser", function() {
         type:         "choice",
         alternatives: [actionAbcd, actionEfgh, actionIjkl, actionMnop]
       },
-      named             = { type: "named",       name: "start rule", expression: literalAbcd },
       ruleA             = { type: "rule",        name: "a",          expression: literalAbcd },
       ruleB             = { type: "rule",        name: "b",          expression: literalEfgh },
       ruleC             = { type: "rule",        name: "c",          expression: literalIjkl },
       ruleStart         = { type: "rule",        name: "start",      expression: literalAbcd },
-      initializer       = { type: "initializer", code: " code " };
+      initializer       = { type: "initializer", code: " code " },
+      attr1             = { name: 'attr1', type: 'boolean', value: false },
+      attr2             = { name: 'attr2', type: 'boolean', value: true },
+      attrName           = { name: 'name', type: 'string', value: 'start rule' };
 
-  function oneRuleGrammar(expression) {
+  function oneRuleGrammar(expression, attributes) {
+    let rule = { type: "rule", name: "start", expression: expression };
+    if (attributes !== undefined) {
+      rule.attributes = attributes;
+    }
     return {
       type:        "grammar",
       initializer: null,
-      rules:       [{ type: "rule", name: "start", expression: expression }]
+      rules:       [rule]
     };
   }
 
@@ -146,9 +152,16 @@ describe("PEG.js grammar parser", function() {
         }
       },
 
+      rule: function(node) {
+        delete node.location;
+        if (node.attributes) {
+          for (let i=0; i < node.attributes.length; i++) {
+            delete node.attributes[i].location;
+          }
+        }
+        strip(node.expression);
+      },
       initializer:  stripLeaf,
-      rule:         stripExpression,
-      named:        stripExpression,
       choice:       stripChildren("alternatives"),
       action:       stripExpression,
       sequence:     stripChildren("elements"),
@@ -279,8 +292,18 @@ describe("PEG.js grammar parser", function() {
       oneRuleGrammar(literalAbcd)
     );
     expect('start\n"start rule"\n=\n"abcd";').toParseAs(
-      oneRuleGrammar(named)
+      oneRuleGrammar(literalAbcd, [attrName])
     );
+    expect('start\n[name="start rule"]\n=\n"abcd";').toParseAs(
+      oneRuleGrammar(literalAbcd, [attrName])
+    );
+    expect('start [attr1=false,attr2]\n=\n"abcd";').toParseAs(
+      oneRuleGrammar(literalAbcd, [attr1, attr2])
+    );
+    expect('start\n"start rule"\n[attr1=false,attr2]\n=\n"abcd";').toParseAs(
+      oneRuleGrammar(literalAbcd, [attrName, attr1, attr2])
+    );
+    expect('start\n"start rule"\n[name="something"]\n=\n"abcd";').toFailToParse();
   });
 
   /* Canonical Expression is "\"abcd\"". */
