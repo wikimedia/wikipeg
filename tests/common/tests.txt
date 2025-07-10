@@ -1256,3 +1256,12 @@ carrot = "carrot"
 !! cases
 "apple" => error [{"type":"literal","value":"banana","description":"\"banana\""},{"type":"literal","value":"carrot","description":"\"carrot\""}]
 !! end
+
+!! desc
+119. Regression with optimized character class matching
+!! grammar
+start = "a" charclass
+charclass = [^a-z]
+!! cases
+"a1" => [ "a", "1" ]
+!! end
