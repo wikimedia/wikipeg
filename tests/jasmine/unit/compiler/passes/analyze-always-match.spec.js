@@ -123,6 +123,49 @@ describe("compiler pass |analyzeAlwaysMatch|", function() {
         }
       );
     });
+    it("is true for action nodes with empty literals", function() {
+      expect(pass).toChangeAST(
+        [
+          'start = abc',
+          'abc = "a" simple "c"',
+          'simple = "" { return 42; }'
+        ].join("\n"),
+        { allowedStartRules: ["start"] },
+        {
+          type : 'grammar',
+          rules : [
+            {
+              type : 'rule',
+              name : 'start',
+              alwaysMatch : false,
+            },
+            {
+              type : 'rule',
+              name : 'abc',
+              alwaysMatch: false,
+              expression: {
+                type: 'sequence',
+                alwaysMatch: false,
+                elements: [
+                  { alwaysMatch: false },
+                  { alwaysMatch: true },
+                  { alwaysMatch: false },
+                ]
+              }
+            },
+            {
+              type : 'rule',
+              name : 'simple',
+              alwaysMatch: true,
+              expression: {
+                type: 'action',
+                alwaysMatch: true,
+              }
+            }
+          ],
+        }
+      );
+    });
     it("is true for a choice with an alwaysMatch clause", function() {
       expect(pass).toChangeAST(
         [

@@ -1265,3 +1265,13 @@ charclass = [^a-z]
 !! cases
 "a1" => [ "a", "1" ]
 !! end
+
+!! desc
+120. Optimize always-match actions
+!! grammar
+start "start" = a:"a" pos:("" { return 42; }) {
+  return [$a,$pos];
+}
+!! cases
+"a" => [ "a", 42 ]
+!! end
