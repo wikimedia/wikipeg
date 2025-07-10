@@ -226,4 +226,17 @@ describe("charsets.classNode", function() {
       )).toHaveParts(['K', "\u212A"]);
     });
   });
+
+  describe(".expand", function() {
+    it("handles small ranges", function() {
+      expect(classNode.expand(
+        build({ parts: [["a", "c"]] }), 16
+      )).toHaveParts(["a", "b", "c"]);
+    });
+    it("leaves large ranges alone", function() {
+      expect(classNode.expand(
+        build({ parts: [["a", "z"]] }), 16
+      )).toHaveParts([["a", "z"]]);
+    });
+  });
 });
