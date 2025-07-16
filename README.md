@@ -107,6 +107,12 @@ object to `PEG.buildParser`. The following options are supported:
     its analysis.
   * `allowUselessChoice` — if `true`, disables the check for rules
     which "always match" as other than the last element in a choice.
+  * `caselessRestrict`  — by default, wikipeg uses the Unicode "Simple
+    Case Folding" algorithm to implement case-insensitive matching.
+	If `caselessRestrict` is true, the algorithm is modified to
+    prohibit case-insensitive matches between ASCII and non-ASCII
+    characters, in the same way that the PCRE CASELESS_RESTRICT
+    feature does.
   * `commonLang` — if `true`, performs some simple modifications to
     action clauses to make it possible to write test cases that work
     in both javascript and PHP.

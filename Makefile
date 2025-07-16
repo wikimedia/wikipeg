@@ -16,6 +16,9 @@ NODE_MODULES_BIN_DIR = $(NODE_MODULES_DIR)/.bin
 PARSER_SRC_FILE = $(LIB_DIR)/parser.pegjs
 PARSER_OUT_FILE = $(LIB_DIR)/parser.js
 
+CASEFOLD_SRC_FILE = $(LIB_DIR)/utils/casefold.pegjs
+CASEFOLD_OUT_FILE = $(LIB_DIR)/utils/casefold.js
+
 VERSION_FILE = VERSION
 
 # ===== Executables =====
@@ -34,6 +37,10 @@ all: parser test-parsers
 # Generate the grammar parser
 parser:
 	$(WIKIPEG) $(PARSER_SRC_FILE) $(PARSER_OUT_FILE)
+
+# Generate the case fold definitions parser
+casefold:
+	$(WIKIPEG) $(CASEFOLD_SRC_FILE) $(CASEFOLD_OUT_FILE)
 
 test: spec common-tests-php common-tests-js
 

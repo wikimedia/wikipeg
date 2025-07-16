@@ -1275,3 +1275,35 @@ start "start" = a:"a" pos:("" { return 42; }) {
 !! cases
 "a" => [ "a", 42 ]
 !! end
+
+!! desc
+121. Case-sensitivity corner cases
+!! grammar
+start = [Sk]i { return "yes"; } / . { return "no"; }
+!! cases
+"k" => "yes"
+"K" => "yes"
+"K" => "yes"
+"s" => "yes"
+"S" => "yes"
+"ſ" => "yes"
+"ß" => "no"
+"t" => "no"
+!! end
+
+!! desc
+122. Case-sensitivity corner cases, with caselessRestrict
+!! options
+{ "caselessRestrict": true }
+!! grammar
+start = [Sk]i { return "yes"; } / . { return "no"; }
+!! cases
+"k" => "yes"
+"K" => "yes"
+"K" => "no"
+"s" => "yes"
+"S" => "yes"
+"ſ" => "no"
+"ß" => "no"
+"t" => "no"
+!! end

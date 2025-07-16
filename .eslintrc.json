@@ -36,7 +36,7 @@
 	},
 	"overrides": [
 		{
-			"files": "lib/parser.js",
+			"files": ["lib/parser.js", "lib/utils/casefold.js"],
 			"rules": {
 				"indent": "off",
 				"no-trailing-spaces": "off",
