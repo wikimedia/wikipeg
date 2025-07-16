@@ -36,11 +36,11 @@ all: parser test-parsers
 
 # Generate the grammar parser
 parser:
-	$(WIKIPEG) $(PARSER_SRC_FILE) $(PARSER_OUT_FILE)
+	$(WIKIPEG) --precise-failure $(PARSER_SRC_FILE) $(PARSER_OUT_FILE)
 
 # Generate the case fold definitions parser
 casefold:
-	$(WIKIPEG) $(CASEFOLD_SRC_FILE) $(CASEFOLD_OUT_FILE)
+	$(WIKIPEG) --precise-failure $(CASEFOLD_SRC_FILE) $(CASEFOLD_OUT_FILE)
 
 test: spec common-tests-php common-tests-js
 

@@ -51,7 +51,7 @@ describe("generated parser API", function() {
             'Alpha = "a"',
             'Beta = "b"',
             'OptionalAlpha = Alpha?',
-      ].join("\n"), { trace: true, noInlining: true });
+      ].join("\n"), { trace: true, noInlining: true, noOptimizeFirstSet: true });
 
       describe("default tracer", function() {
         it("traces using console.log", function() {

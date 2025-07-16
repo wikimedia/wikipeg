@@ -13,6 +13,7 @@ describe("generated parser behavior", function() {
         }
       }
 
+      result.noOptimizeFirstSet = true;
       return result;
     }
 
@@ -229,7 +230,8 @@ describe("generated parser behavior", function() {
             var parser = PEG.buildParser(
               'start = alpha "b";\n' +
               'alpha = a+;\n' +
-              'a = "a";\n'
+              'a = "a";\n',
+              { noOptimizeFirstSet: true }
             );
 
             expect(parser).toFailToParse("b", {
@@ -243,7 +245,8 @@ describe("generated parser behavior", function() {
             var parser = PEG.buildParser(
               'start = alpha "b";\n' +
               'alpha "alpha" = a+;\n' +
-              'a = "a";\n'
+              'a = "a";\n',
+              { noOptimizeFirstSet: true }
             );
 
             expect(parser).toFailToParse("c", {

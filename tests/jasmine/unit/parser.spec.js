@@ -176,7 +176,7 @@ describe("PEG.js grammar parser", function() {
         var result;
 
         try {
-          result = PEG.parser.parse(this.actual);
+          result = PEG.parser.parse(this.actual, { noOptimizeFirstSet: true });
 
           stripLocation(result);
 

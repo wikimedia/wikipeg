@@ -158,6 +158,11 @@ while (args.length > 0 && isOption(args[0])) {
       options.cache = true;
       break;
 
+    case "--precise-failure":
+      options.noInlining = true;
+      options.noOptimizeFirstSet = true;
+      break;
+
     case '--allow-loops':
       options.allowLoops = true;
       break;

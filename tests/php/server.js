@@ -21,6 +21,7 @@ rl.on('line', function (line) {
     plugins:  [],
     language: 'php',
     commonLang: true,
+    optimizeFirstSet: 'call',
   };
   Object.assign(options, JSON.parse(line));
 

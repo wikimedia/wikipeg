@@ -123,6 +123,11 @@ object to `PEG.buildParser`. The following options are supported:
     are tracing execution or testing the parser and wish to see every
     rule entry/exit, or need to explicitly manage caching. See
 	the [Caching](#caching) section below.
+  * `noOptimizeFirstSet` - if `true`, disables an optimization which
+    fails early if looking at the first character is sufficient to
+    determine that a rule can not match.  This can affect failure
+	reporting, since we might be able to fail on a parent rule before
+	actually recursing into the child responsible.
   * `cacheInitHook` and `cacheRuleHook` — functions to generate custom cache
     control code
   * `allowedStartRules` — rules the parser will be allowed to start parsing from
