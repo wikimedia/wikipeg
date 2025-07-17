@@ -107,9 +107,9 @@ object to `PEG.buildParser`. The following options are supported:
     its analysis.
   * `allowUselessChoice` — if `true`, disables the check for rules
     which "always match" as other than the last element in a choice.
-  * `caselessRestrict`  — by default, wikipeg uses the Unicode "Simple
+  * `caselessRestrict`  — by default, WikiPEG uses the Unicode "Simple
     Case Folding" algorithm to implement case-insensitive matching.
-	If `caselessRestrict` is true, the algorithm is modified to
+    If `caselessRestrict` is true, the algorithm is modified to
     prohibit case-insensitive matches between ASCII and non-ASCII
     characters, in the same way that the PCRE CASELESS_RESTRICT
     feature does.
@@ -122,12 +122,12 @@ object to `PEG.buildParser`. The following options are supported:
     classes and repeated character classes. This can be useful if you
     are tracing execution or testing the parser and wish to see every
     rule entry/exit, or need to explicitly manage caching. See
-	the [Caching](#caching) section below.
+    the [Caching](#caching) section below.
   * `noOptimizeFirstSet` - if `true`, disables an optimization which
     fails early if looking at the first character is sufficient to
     determine that a rule can not match.  This can affect failure
-	reporting, since we might be able to fail on a parent rule before
-	actually recursing into the child responsible.
+    reporting, since we might be able to fail on a parent rule before
+    actually recursing into the child responsible.
   * `cacheInitHook` and `cacheRuleHook` — functions to generate custom cache
     control code
   * `allowedStartRules` — rules the parser will be allowed to start parsing from
@@ -252,11 +252,11 @@ example:
     JavaScript array with all the matches.
   * An expression matching a sequence of expressions produces a
     JavaScript array with all the picked elements.
-	* If no matches are picked, all elements of the sequence will be
+    * If no matches are picked, all elements of the sequence will be
       present in the array.
     * If the pick operator (`@`) is used, only those elements which
       are picked will be present.  If only one element is picked, it
-	  will be returned directly (not wrapped in a 1-element array).
+      will be returned directly (not wrapped in a 1-element array).
 
 The match results propagate through the rules when the rule names are used in
 expressions, up to the start rule. The generated parser returns start rule's
