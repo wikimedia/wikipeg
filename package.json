@@ -25,6 +25,7 @@
 		"examples/*.pegphp",
 		"lib/**/*.js",
 		"lib/**/*.php",
+		"lib/utils/CaseFolding.txt",
 		"src/**/*.php",
 		"tools/build-browser.js",
 		"package.json"
