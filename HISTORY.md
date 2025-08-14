@@ -1,5 +1,7 @@
 # Release History
 
+## x.x.x (not yet released)
+
 ## 6.0.0 (2025-08-14)
 * Bump minimum required PHP version to 8.1
 * Zero-or-more or one-or-more repetitions of character classes are now
