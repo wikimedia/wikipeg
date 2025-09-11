@@ -1,6 +1,9 @@
 # Release History
 
 ## x.x.x (not yet released)
+* Add 'labeled expression parameter' which allows parameterizing a rule
+  by the (string) value of a labeled expression.  This is particularly
+  useful for parsing matched syntax elements, like XML tags.
 
 ## 6.0.0 (2025-08-14)
 * Bump minimum required PHP version to 8.1

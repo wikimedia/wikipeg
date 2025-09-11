@@ -1543,3 +1543,51 @@ three = a:one (a:"2" "3" { return $a; }) { return $a; }
 !! cases
 "12123" => ["1","1"]
 !! end
+
+!! desc
+139. Labeled-expression parameters
+!! grammar
+start = @t:opentag @$(!closetag<tag=$t> .)* closetag<tag=$t>
+opentag = "<" @tagname ">"
+closetag = "</" actual:tagname expected:<tag> ">" &{
+  return $actual === $expected;
+}
+tagname = $([a-z]+)
+!! cases
+"<p>test</p>" => ["p", "test"]
+"<p>test</b>" => error
+"<p><b>test</b></p>" => ["p","<b>test</b>"]
+!! end
+
+!! desc
+140. Default value of labeled-expression parameters
+!! grammar
+start = a:$"1" @rule<param=$a> / "2" @rule
+rule = b:<param> "" { return $b; }
+!! cases
+"1" => "1"
+"2" => null
+!! end
+
+!! desc
+141. Labeled-expression parameters coexisting with string-valued parameters
+!! grammar
+start = a:$"1" @rule<param=$a> / "2" @rule<param="string"> / "3" @rule
+rule = b:<param> "" { return $b; }
+!! cases
+"1" => "1"
+"2" => "string"
+"3" => ""
+!! end
+
+!! desc
+142. Labeled-expression parameters coexisting with integer-valued parameters
+!! grammar
+start = a:one @rule<param=$a> / "2" @rule<param=2> / "3" @rule
+rule = b:<param> "" { return $b; }
+one = "1" { return 1; }
+!! cases
+"1" => 1
+"2" => 2
+"3" => 0
+!! end

@@ -571,11 +571,12 @@ All parameters referenced in the grammar have an initial value and can
 be used before their first assignment.
 
 Parameters have a type detected at compile time: boolean, integer,
-string or reference. Initial values for each type are:
+string, reference, or labeled expression. Initial values for each type are:
   - boolean: false
   - integer: 0
   - string: ""
   - reference: null
+  - labeled expression: null (or the integer or string default value)
 
 The parameter namespace is global, but the value of a parameter reverts
 to its previous value after termination of the assigning rule reference.
@@ -614,6 +615,14 @@ Assign x = x + 1.
 #### *rule* < *parameter* = "*literal*" >
 
 String assignment.
+
+#### *rule* < *parameter* = $*label* >
+
+Assign the value of the given labeled expression to the parameter.
+
+Labeled expression parameters can't be intermixed with boolean
+assignments to the same parameter, but they can co-exist with
+integer or string assignments to the parameter.
 
 #### *rule* < & *parameter* = 1 >
 
