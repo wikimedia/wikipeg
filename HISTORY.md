@@ -4,6 +4,8 @@
 * Add 'labeled expression parameter' which allows parameterizing a rule
   by the (string) value of a labeled expression.  This is particularly
   useful for parsing matched syntax elements, like XML tags.
+* Add the ability to assert that a parameter has a specific value.
+  Previously assertions were limited to truthy/falsey.
 
 ## 6.0.0 (2025-08-14)
 * Bump minimum required PHP version to 8.1

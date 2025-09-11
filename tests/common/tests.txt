@@ -1591,3 +1591,71 @@ one = "1" { return 1; }
 "2" => 2
 "3" => 0
 !! end
+
+!! desc
+143. Parameter value assertions (string)
+!! grammar
+start = "1" @rule<p="1">
+      / "2" @rule<p="2">
+      / "3" @rule<p="3">
+rule = &<p=="1"> { return 1; }
+     / !<p=="3"> { return 2; }
+     / &<p>      { return 3; }
+!! cases
+"1" => 1
+"2" => 2
+"3" => 3
+!! end
+
+!! desc
+144. Parameter value assertions (integer)
+!! grammar
+start = "1" @rule<p=1>
+      / "2" @rule<p=2>
+      / "3" @rule<p=3>
+rule = &<p==1> { return 1; }
+     / !<p==3> { return 2; }
+     / &<p>    { return 3; }
+!! cases
+"1" => 1
+"2" => 2
+"3" => 3
+!! end
+
+!! desc
+145. Parameter value assertions (boolean)
+!! grammar
+start = "1" @rule<p=true>
+      / "2" @rule<p=false>
+      / "3" @rule<p>
+rule = "x" &<p==true>  { return 1; }
+     / "x" !<p==true>  { return 2; }
+     / "y" &<p==false> { return 3; }
+     / "y" !<p==false> { return 4; }
+     / "z" &<p>        { return 5; }
+     / "z" !<p>        { return 6; }
+!! cases
+"1x" => 1
+"1y" => 4
+"1z" => 5
+"2x" => 2
+"2y" => 3
+"2z" => 6
+"3x" => 1
+"3y" => 4
+"3z" => 5
+!! end
+
+!! desc
+146. Parameter value assertions (labeled expression)
+!! grammar
+start = n:number @rule<p=$n>
+rule = eq / ne
+eq = n:number &<p==$n> { return "equal"; }
+ne = n:number !<p==$n> { return "not equal"; }
+number = $[0-9]
+!! cases
+"11" => "equal"
+"12" => "not equal"
+"22" => "equal"
+!! end

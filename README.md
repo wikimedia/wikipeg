@@ -591,6 +591,15 @@ Assert that the parameter "x" is true or nonzero
 
 Assert that the parameter "x" is false or zero
 
+#### & < *parameter* == *value* >
+
+Assert that the parameter "x" has the specified value.
+
+#### ! < *parameter* == *value* >
+#### & < *parameter* != *value* >
+
+Assert that the parameter "x" does not have the specified value.
+
 #### *rule* < *parameter* = true >
 
 Match a parsing expression of a rule recursively, and assign *parameter* to
