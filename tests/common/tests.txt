@@ -899,7 +899,7 @@ r = "a" s:<s> { return $s; }
 start = main<&ref=1>
 main = a:getref setref b:getref ref:<ref> { return [$a, $b, $ref]; }
 getref = "a" ref:<ref> { return $ref; }
-setref = "b" ref:<&ref> { $this->setRef($ref, 2); }
+setref [pure=false] = "b" ref:<&ref> { $this->setRef($ref, 2); return null; }
 !! cases
 "aba" => [1, 2, 2]
 !! end
@@ -980,8 +980,8 @@ dummy = ""
 }
 Start = Main<&ref=0>
 Main = ClearRef SetRef GetRef ClearRef SetRef GetRef
-ClearRef = ref:<&ref> { $this->setRef($ref, 0); return 10;}
-SetRef = ref:<&ref> { $this->setRef($ref, 1); return 11; }
+ClearRef [pure=false] = ref:<&ref> { $this->setRef($ref, 0); return 10;}
+SetRef [pure=false] = ref:<&ref> { $this->setRef($ref, 1); return 11; }
 GetRef = ref:<ref> "" { return $ref; }
 !! cases
 ""  => [10, 11, 1, 10, 11, 1]
@@ -1042,8 +1042,8 @@ main = a:getref
        c:getref
        ref:<ref> { return [$a, $b, $c, $ref]; }
 getref = "a" ref:<ref> { return $ref; }
-setref = "b" ref:<&ref> { $this->setRef($ref, 2); }
-clearref = ref:<&ref> { $this->setRef($ref, 1); }
+setref [pure=false] = "b" ref:<&ref> { $this->setRef($ref, 2); return 2; }
+clearref [pure=false] = ref:<&ref> { $this->setRef($ref, 1); return 1; }
 !! cases
 "abcaeba" => [1, 2, 2, 2]
 "abcaefa" => [1, 2, 1, 1]
@@ -1183,7 +1183,7 @@ subrule = "c" ( "d" / "e" setref<v=2> ) "f" v1:getref ( "g" [g] / "h" setref<v=3
    v2:getref { return [ $v1, $v2 ]; }
 
 getref = "a" ref:<ref> { return $ref; }
-setref = "b" val:<v> ref:<&ref> { $this->setRef($ref, $val); }
+setref = "b" val:<v> ref:<&ref> &{ $this->setRef($ref, $val); return true; }
 !! cases
 "cdfaggaxa" => [[1,1],1]
 "cebfahbaya" => [[2,3],3]
@@ -1209,7 +1209,7 @@ subrule = "c" ( "d" setref<v=2> ( "e" setref<v=3> "f" / "eg" ) "h" / "degi" )
     v1:getref { return $v1; }
 
 getref = ref:<ref> { return $ref; }
-setref = val:<v> ref:<&ref> { $this->setRef($ref, $val); }
+setref = val:<v> ref:<&ref> &{ $this->setRef($ref, $val); return true; }
 !! cases
 "cdegi" => 1
 !! end

@@ -6,6 +6,12 @@
   useful for parsing matched syntax elements, like XML tags.
 * Add the ability to assert that a parameter has a specific value.
   Previously assertions were limited to truthy/falsey.
+* Add `optimizePureActions` option to the PEG compiler which enables an
+  optimization to skip execution of rule action blocks whose values
+  are never used.  A new `[pure]` rule attribute can enable or disable
+  this optimization on an individual rule.  For example,
+  `[pure=false]` ensures execution of that rule's action block(s) on a
+  successful match, even if the rule result is discarded.
 
 ## 6.0.0 (2025-08-14)
 * Bump minimum required PHP version to 8.1

@@ -98,7 +98,7 @@ describe("PEG.js API", function() {
       var grammar = [
             '{ var n = 0; }',
             'start = (a "b") {return "b";} / (a "c") { return n; }',
-            'a     = "a" { n++; }'
+            'a [pure=false] = "a" { n++; }'
           ].join("\n");
 
       describe("when |cache| is not set", function() {

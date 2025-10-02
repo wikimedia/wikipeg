@@ -128,6 +128,11 @@ object to `PEG.buildParser`. The following options are supported:
     determine that a rule can not match.  This can affect failure
     reporting, since we might be able to fail on a parent rule before
     actually recursing into the child responsible.
+  * `optimizePureActions` = if `true`, defaults to enabling a rule
+    optimization which skips executing rule action blocks if the
+    result of that rule will not be used.  This can be enabled or
+    disabled for individual rules via the `[pure]` rule attribute
+    described below.
   * `cacheInitHook` and `cacheRuleHook` — functions to generate custom cache
     control code
   * `allowedStartRules` — rules the parser will be allowed to start parsing from
@@ -560,6 +565,19 @@ prevent false positives when WikiPEG checks for infinite loops.
 Marks a rule as unreachable. If the `allowUselessChoice` option is
 false, this attribute permits a reference to the rule in a choice even
 if a previous option in the choice appears to always match.
+
+#### [pure]
+
+Marks a rule as not having side effects in its action blocks.  This
+allows action blocks in rules which have this attribute set to be
+skipped (not executed) when the value of the rule is not needed.
+
+#### [pure=false]
+
+Marks a rule as having side effects in its action blocks.  If the
+`optimizePureActions` option is given to the parser, this ensures that
+the action blocks for this rule are executed even if the value of
+the rule is not needed.
 
 Rule parameter syntax
 ---------------------

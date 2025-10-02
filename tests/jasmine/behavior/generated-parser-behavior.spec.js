@@ -167,7 +167,7 @@ describe("generated parser behavior", function() {
           var parser = PEG.buildParser([
                 '{ var n = 0; }',
                 'start = (a "b") {return "b";} / (a "c") { return n; }',
-                'a = "a" { n++; }'
+                'a [pure=false] = "a" { return n++; }'
               ].join("\n"), options);
 
           expect(parser).toParse("ac", 1);
@@ -177,7 +177,7 @@ describe("generated parser behavior", function() {
           var parser = PEG.buildParser([
                 '{ var n = 0; }',
                 'start = (a "b") / (a "c") { return n; }',
-                'a = "a" { n++; }'
+                'a [pure=false] = "a" { return n++; }'
               ].join("\n"), options);
 
           expect(parser).toParse("ac", 2);
@@ -480,7 +480,7 @@ describe("generated parser behavior", function() {
                   'line   = thing (" "+ thing)*',
                   'thing  = digit / mark',
                   'digit  = [0-9]',
-                  'mark   = "x" { result = location(); }',
+                  'mark [pure=false] = "x" { result = location(); return; }',
                   'nl     = [\\r\\n\\u2028\\u2029]'
                 ].join("\n"), options);
 
