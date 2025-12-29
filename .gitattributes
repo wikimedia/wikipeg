@@ -10,6 +10,7 @@
 /build/ export-ignore
 /examples/ export-ignore
 /package.json export-ignore
+/package-lock.json export-ignore
 
 # Auto detect text files and perform LF normalization
 * text=auto
