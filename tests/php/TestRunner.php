@@ -76,7 +76,9 @@ class TestRunner {
 	}
 
 	private function installErrorHandler() {
-		// @phan-suppress-next-line PhanTypeMismatchArgumentInternal
+		/**
+		 * @return never
+		 */
 		set_error_handler( function ( $code, $message, $file, $lineNumber ) {
 			$this->handleError( $message, $lineNumber );
 		} );
