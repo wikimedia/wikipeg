@@ -1,6 +1,6 @@
 # Release History
 
-## x.x.x (not yet released)
+## 6.1.0 (2026-02-13)
 * Add 'labeled expression parameter' which allows parameterizing a rule
   by the (string) value of a labeled expression.  This is particularly
   useful for parsing matched syntax elements, like XML tags.
