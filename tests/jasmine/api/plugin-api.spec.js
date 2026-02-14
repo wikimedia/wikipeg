@@ -1,42 +1,8 @@
-/* global beforeEach, describe, expect, it, jasmine, PEG */
+/* global describe, expect, it, PEG */
 
 "use strict";
 
 describe("plugin API", function() {
-  beforeEach(function() {
-    this.addMatchers({
-      toBeObject: function() {
-        this.message = function() {
-          return "Expected " + jasmine.pp(this.actual) + " "
-               + (this.isNot ? "not " : "")
-               + "to be an object.";
-        };
-
-        return this.actual !== null && typeof this.actual === "object";
-      },
-
-      toBeArray: function() {
-        this.message = function() {
-          return "Expected " + jasmine.pp(this.actual) + " "
-               + (this.isNot ? "not " : "")
-               + "to be an array.";
-        };
-
-        return Object.prototype.toString.apply(this.actual) === "[object Array]";
-      },
-
-      toBeFunction: function() {
-        this.message = function() {
-          return "Expected " + jasmine.pp(this.actual) + " "
-               + (this.isNot ? "not " : "")
-               + "to be a function.";
-        };
-
-        return typeof this.actual === "function";
-      },
-    });
-  });
-
   describe("use", function() {
     var grammar = 'start = "a"';
 

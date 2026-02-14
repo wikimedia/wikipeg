@@ -1,4 +1,4 @@
-/* global beforeEach, describe, expect, it, jasmine, PEG */
+/* global beforeEach, describe, expect, it, jasmine, PEG, addMatchersLegacy */
 
 "use strict";
 
@@ -159,6 +159,9 @@ describe("PEG.js grammar parser", function() {
             delete node.attributes[i].location;
           }
         }
+        if (node.attributes === undefined) {
+          delete node.attributes;
+        }
         strip(node.expression);
       },
       initializer:  stripLeaf,
@@ -184,50 +187,47 @@ describe("PEG.js grammar parser", function() {
   })();
 
   beforeEach(function() {
-    this.addMatchers({
-      toParseAs:     function(expected) {
-        var result;
-
+    addMatchersLegacy(jasmine, {
+      toParseAs: function(actual, expected, matchersUtil, isNot) {
+        var value, result = {};
         try {
-          result = PEG.parser.parse(this.actual, { noOptimizeFirstSet: true });
+          value = PEG.parser.parse(actual, { noOptimizeFirstSet: true });
 
-          stripLocation(result);
+          stripLocation(value);
 
-          this.message = function() {
-            return "Expected " + jasmine.pp(this.actual) + " "
-                 + (this.isNot ? "not " : "")
-                 + "to parse as " + jasmine.pp(expected) + ", "
-                 + "but it parsed as " + jasmine.pp(result) + ".";
+          result.message = function() {
+            return "Expected " + matchersUtil.pp(actual) + " "
+                 + (isNot ? "not " : "")
+                 + "to parse as " + matchersUtil.pp(expected) + ", "
+                 + "but it parsed as " + matchersUtil.pp(value) + ".";
           };
-
-          return this.env.equals_(result, expected);
+          result.pass = matchersUtil.equals(value, expected);
         } catch (e) {
-          this.message = function() {
-            return "Expected " + jasmine.pp(this.actual) + " "
-                 + "to parse as " + jasmine.pp(expected) + ", "
+          result.message = function() {
+            return "Expected " + matchersUtil.pp(actual) + " "
+                 + "to parse as " + matchersUtil.pp(expected) + ", "
                  + "but it failed to parse with message "
-                 + jasmine.pp(e.message) + ".";
+                 + matchersUtil.pp(e.message) + ".";
           };
-
-          return false;
+          result.pass = false;
         }
+        return result;
       },
-
-      toFailToParse: function(details) {
-        var result;
+      toFailToParse: function(actual, details, matchersUtil, isNot) {
+        var value, result = {};
 
         try {
-          result = PEG.parser.parse(this.actual);
+          value = PEG.parser.parse(actual);
 
-          stripLocation(result);
+          stripLocation(value);
 
-          this.message = function() {
-            return "Expected " + jasmine.pp(this.actual) + " to fail to parse"
-                 + (details ? " with details " + jasmine.pp(details) : "") + ", "
-                 + "but it parsed as " + jasmine.pp(result) + ".";
+          result.message = function() {
+            return "Expected " + matchersUtil.pp(actual) + " to fail to parse"
+                 + (details ? " with details " + matchersUtil.pp(details) : "") + ", "
+                 + "but it parsed as " + matchersUtil.pp(value) + ".";
           };
 
-          return false;
+          result.pass = false;
         } catch (e) {
           /*
            * Should be at the top level but then JSHint complains about bad for
@@ -235,34 +235,35 @@ describe("PEG.js grammar parser", function() {
            */
           var key;
 
-          if (this.isNot) {
-            this.message = function() {
-              return "Expected " + jasmine.pp(this.actual) + " to parse, "
+          if (isNot) {
+            result.message = function() {
+              return "Expected " + matchersUtil.pp(actual) + " to parse, "
                    + "but it failed with message "
-                   + jasmine.pp(e.message) + ".";
+                   + matchersUtil.pp(e.message) + ".";
             };
           } else {
             if (details) {
               for (key in details) {
                 if (details.hasOwnProperty(key)) {
-                  if (!this.env.equals_(e[key], details[key])) {
-                    this.message = function() {
-                      return "Expected " + jasmine.pp(this.actual) + " to fail to parse"
-                           + (details ? " with details " + jasmine.pp(details) : "") + ", "
-                           + "but " + jasmine.pp(key) + " "
-                           + "is " + jasmine.pp(e[key]) + ".";
+                  if (!matchersUtil.equals(e[key], details[key])) {
+                    result.message = function() {
+                      return "Expected " + matchersUtil.pp(actual) + " to fail to parse"
+                           + (details ? " with details " + matchersUtil.pp(details) : "") + ", "
+                           + "but " + matchersUtil.pp(key) + " "
+                           + "is " + matchersUtil.pp(e[key]) + ".";
                     };
-
-                    return false;
+                    result.pass = false;
+                    return result;
                   }
                 }
               }
             }
           }
 
-          return true;
+          result.pass = true;
         }
-      }
+        return result;
+      },
     });
   });
 

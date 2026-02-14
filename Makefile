@@ -26,7 +26,7 @@ VERSION_FILE = VERSION
 NODE          = node
 PHP           = php
 ESLINT        = $(NODE_MODULES_BIN_DIR)/eslint
-JASMINE_NODE  = $(NODE_MODULES_BIN_DIR)/jasmine-node
+JASMINE       = $(NODE_MODULES_BIN_DIR)/jasmine
 WIKIPEG       = $(BIN_DIR)/wikipeg
 BENCHMARK_RUN = $(BENCHMARK_DIR)/run
 
@@ -46,7 +46,7 @@ test: spec common-tests-php common-tests-js
 
 # Run the spec suite
 spec:
-	$(JASMINE_NODE) --verbose $(SPEC_DIR)
+	$(JASMINE)
 
 common-tests-php:
 	$(PHP) tests/php/runCommonTests.php

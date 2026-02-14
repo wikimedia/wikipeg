@@ -1,10 +1,10 @@
-/* global beforeEach, jasmine, PEG */
+/* global beforeEach, jasmine, PEG, addMatchersLegacy */
 
 "use strict";
 
 beforeEach(function() {
-  this.addMatchers({
-    toChangeAST: function(grammar) {
+  addMatchersLegacy(jasmine, {
+    toChangeAST: function(pass, grammar, matchersUtil, isNot, options, details) {
       function matchDetails(value, details) {
         function isArray(value) {
           return Object.prototype.toString.apply(value) === "[object Array]";
@@ -42,12 +42,16 @@ beforeEach(function() {
         }
       }
 
-      var options = arguments.length > 2 ? arguments[1] : {},
-          details = arguments[arguments.length - 1],
-          ast     = PEG.parser.parse(grammar, options);
+      // Allow 'options' to be an optional argument.
+      if (details === undefined) {
+        details = options;
+        options = {};
+      }
+      var ast     = PEG.parser.parse(grammar, options);
+      var result = {};
 
       // options defaults should match those in compiler.js:compile()
-      this.actual(ast, Object.assign({
+      pass(ast, Object.assign({
         allowedStartRules: [ast.rules[0].name],
         allowedStreamRules: [],
         cache: false,
@@ -56,42 +60,46 @@ beforeEach(function() {
         output: "parser",
       }, options));
 
-      this.message = function() {
+      result.message = function() {
         return "Expected the pass "
-             + "with options " + jasmine.pp(options) + " "
-             + (this.isNot ? "not " : "")
-             + "to change the AST " + jasmine.pp(ast) + " "
-             + "to match " + jasmine.pp(details) + ", "
-             + "but it " + (this.isNot ? "did" : "didn't") + ".";
+          + "with options " + matchersUtil.pp(options) + " "
+          + (isNot ? "not " : "")
+          + "to change the AST " + matchersUtil.pp(ast) + " "
+          + "to match " + matchersUtil.pp(details) + ", "
+          + "but it " + (isNot ? "did" : "didn't") + ".";
       };
-
-      return matchDetails(ast, details);
+      result.pass = matchDetails(ast, details);
+      return result;
     },
 
-    toReportError: function(grammar) {
-      var options = arguments.length > 2 ? arguments[1] : {},
-          details = arguments.length > 1 ? arguments[arguments.length - 1] : undefined,
-          ast = PEG.parser.parse(grammar, options);
+    toReportError: function(pass, grammar, matchersUtil, isNot, options, details) {
+      // Allow 'options' to be an optional argument.
+      if (details === undefined) {
+        details = options;
+        options = {};
+      }
+      var ast = PEG.parser.parse(grammar, options);
+      var result = {};
 
       try {
         // options defaults should match those in compiler.js:compile()
-        this.actual(ast, Object.assign({
+        pass(ast, Object.assign({
           allowedStartRules: [ast.rules[0].name],
           allowedStreamRules: [],
           cache: false,
           trace: false,
           optimize: "speed",
           output: "parser",
-		}, options));
+        }, options));
 
-        this.message = function() {
+        result.message = function() {
           return "Expected the pass to report an error "
-               + (details ? "with details " + jasmine.pp(details) + " ": "")
-               + "for grammar " + jasmine.pp(grammar) + ", "
-               + "but it didn't.";
+            + (details ? "with details " + matchersUtil.pp(details) + " ": "")
+            + "for grammar " + matchersUtil.pp(grammar) + ", "
+            + "but it didn't.";
         };
-
-        return false;
+        result.pass = false;
+        return result;
       } catch (e) {
         /*
          * Should be at the top level but then JSHint complains about bad for
@@ -99,33 +107,34 @@ beforeEach(function() {
          */
         var key;
 
-        if (this.isNot) {
-          this.message = function() {
+        if (isNot) {
+          result.message = function() {
             return "Expected the pass not to report an error "
-                 + "for grammar " + jasmine.pp(grammar) + ", "
-                 + "but it did.";
+              + "for grammar " + matchersUtil.pp(grammar) + ", "
+              + "but it did.";
           };
         } else {
           if (details) {
             for (key in details) {
               if (details.hasOwnProperty(key)) {
-                if (!this.env.equals_(e[key], details[key])) {
-                  this.message = function() {
+                if (!matchersUtil.equals(e[key], details[key])) {
+                  result.message = function() {
                     return "Expected the pass to report an error "
-                         + "with details " + jasmine.pp(details) + " "
-                         + "for grammar " + jasmine.pp(grammar) + ", "
-                         + "but " + jasmine.pp(key) + " "
-                         + "is " + jasmine.pp(e[key]) + ".";
+                      + "with details " + matchersUtil.pp(details) + " "
+                      + "for grammar " + matchersUtil.pp(grammar) + ", "
+                      + "but " + matchersUtil.pp(key) + " "
+                      + "is " + matchersUtil.pp(e[key]) + ".";
                   };
-
-                  return false;
+                  result.pass = false;
+                  return result;
                 }
               }
             }
           }
         }
 
-        return true;
+        result.pass = true;
+        return result;
       }
     }
   });

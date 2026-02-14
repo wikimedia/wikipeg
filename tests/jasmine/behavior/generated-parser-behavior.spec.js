@@ -1,4 +1,4 @@
-/* global beforeEach, describe, expect, it, jasmine, PEG */
+/* global beforeEach, describe, expect, it, jasmine, PEG, addMatchersLegacy */
 
 "use strict";
 
@@ -33,60 +33,61 @@ describe("generated parser behavior", function() {
   }
 
   beforeEach(function() {
-    this.addMatchers({
-      toParse: function(input) {
-        var options  = arguments.length > 2 ? arguments[1] : {},
-            expected = arguments[arguments.length - 1],
-            result;
+    addMatchersLegacy(jasmine, {
+      toParse: function(parser, input, matchersUtil, isNot, options, expected) {
+		// Allow 'options' to be an optional argument.
+		if (expected === undefined) {
+          expected = options;
+          options = {};
+        }
+        var value, result = {};
 
         try {
-          result = this.actual.parse(input, options);
+          value = parser.parse(input, options);
 
-          if (arguments.length > 1) {
-            this.message = function() {
-              return "Expected " + jasmine.pp(input) + " "
-                   + "with options " + jasmine.pp(options) + " "
+          if (expected !== undefined) {
+            result.message = function() {
+              return "Expected " + matchersUtil.pp(input) + " "
+                   + "with options " + matchersUtil.pp(options) + " "
                    + (this.isNot ? "not " : "")
-                   + "to parse as " + jasmine.pp(expected) + ", "
-                   + "but it parsed as " + jasmine.pp(result) + ".";
+                   + "to parse as " + matchersUtil.pp(expected) + ", "
+                   + "but it parsed as " + matchersUtil.pp(value) + ".";
             };
-
-            return this.env.equals_(result, expected);
+            result.pass = matchersUtil.equals(value, expected);
           } else {
-            return true;
+            result.pass = true;
           }
         } catch (e) {
-          this.message = function() {
-            return "Expected " + jasmine.pp(input) + " "
-                 + "with options " + jasmine.pp(options) + " "
-                 + "to parse" + (arguments.length > 1 ? " as " + jasmine.pp(expected) : "") + ", "
+          result.message = function() {
+            return "Expected " + matchersUtil.pp(input) + " "
+                 + "with options " + matchersUtil.pp(options) + " "
+                 + "to parse" + (expected !== undefined ? " as " + matchersUtil.pp(expected) : "") + ", "
                  + "but it failed to parse with message "
-                 + jasmine.pp(e.message) + ".";
+                 + matchersUtil.pp(e.message) + ".";
           };
-
-          return false;
+          result.pass = false;
         }
+        return result;
       },
 
-      toFailToParse: function(input) {
-        var options = arguments.length > 2 ? arguments[1] : {},
-            details = arguments.length > 1
-                        ? arguments[arguments.length - 1]
-                        : undefined,
-            result;
+      toFailToParse: function(parser, input, matchersUtil, isNot, options, details) {
+        if (details === undefined) {
+          details = options;
+          options = {};
+        }
+        var value, result = {};
 
         try {
-          result = this.actual.parse(input, options);
+          value = parser.parse(input, options);
 
-          this.message = function() {
-            return "Expected " + jasmine.pp(input) + " "
-                 + "with options " + jasmine.pp(options) + " "
+          result.message = function() {
+            return "Expected " + matchersUtil.pp(input) + " "
+                 + "with options " + matchersUtil.pp(options) + " "
                  + "to fail to parse"
-                 + (details ? " with details " + jasmine.pp(details) : "") + ", "
-                 + "but it parsed as " + jasmine.pp(result) + ".";
+                 + (details ? " with details " + matchersUtil.pp(details) : "") + ", "
+                 + "but it parsed as " + matchersUtil.pp(value) + ".";
           };
-
-          return false;
+          result.pass = false;
         } catch (e) {
           /*
            * Should be at the top level but then JSHint complains about bad for
@@ -94,37 +95,38 @@ describe("generated parser behavior", function() {
            */
           var key;
 
-          if (this.isNot) {
-            this.message = function() {
-              return "Expected " + jasmine.pp(input)
-                   + "with options " + jasmine.pp(options) + " "
+          if (isNot) {
+            result.message = function() {
+              return "Expected " + matchersUtil.pp(input)
+                   + "with options " + matchersUtil.pp(options) + " "
                    + "to parse, "
                    + "but it failed with message "
-                   + jasmine.pp(e.message) + ".";
+                   + matchersUtil.pp(e.message) + ".";
             };
+            result.pass = true;
           } else {
             if (details) {
               for (key in details) {
                 if (details.hasOwnProperty(key)) {
-                  if (!this.env.equals_(e[key], details[key])) {
-                    this.message = function() {
-                      return "Expected " + jasmine.pp(input) + " "
-                           + "with options " + jasmine.pp(options) + " "
+                  if (!matchersUtil.equals(e[key], details[key])) {
+                    result.message = function() {
+                      return "Expected " + matchersUtil.pp(input) + " "
+                           + "with options " + matchersUtil.pp(options) + " "
                            + "to fail to parse"
-                           + (details ? " with details " + jasmine.pp(details) : "") + ", "
-                           + "but " + jasmine.pp(key) + " "
-                           + "is " + jasmine.pp(e[key]) + ".";
+                           + (details ? " with details " + matchersUtil.pp(details) : "") + ", "
+                           + "but " + matchersUtil.pp(key) + " "
+                           + "is " + matchersUtil.pp(e[key]) + ".";
                     };
-
-                    return false;
+                    result.pass = false;
+                    return result;
                   }
                 }
               }
             }
           }
-
-          return true;
+          result.pass = true;
         }
+        return result;
       }
     });
   });
