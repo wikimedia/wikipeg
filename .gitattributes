@@ -1,16 +1,17 @@
 /.* export-ignore
-/tests/ export-ignore
+/benchmark/ export-ignore
+/bin/ export-ignore
+/build/ export-ignore
 /composer.json export-ignore
 /Doxyfile export-ignore
-/phpunit.xml.dist export-ignore
-/Makefile export-ignore
-/benchmark export-ignore
-/bin/ export-ignore
-/lib/ export-ignore
-/build/ export-ignore
 /examples/ export-ignore
-/package.json export-ignore
+/lib/ export-ignore
+/Makefile export-ignore
 /package-lock.json export-ignore
+/package.json export-ignore
+/phpunit.xml.dist export-ignore
+/spec/ export-ignore
+/tests/ export-ignore
 
 # Auto detect text files and perform LF normalization
 * text=auto
