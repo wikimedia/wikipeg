@@ -43,7 +43,7 @@
 	},
 	"devDependencies": {
 		"eslint": "8.57.0",
-		"jasmine": "6.0.0"
+		"jasmine": "7.0.0-pre.1"
 	},
 	"engines": {
 		"node": ">= 6.0.0"
