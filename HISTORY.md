@@ -1,9 +1,10 @@
 # Release History
 
-## x.x.x (not yet released)
+## 6.1.2 (2026-05-07)
 * Update jasmine to 7.0.0-pre.1.  This removes the reported security
   vulnerability in the glob package even though this is only used
   when running tests.
+* Dependency updates.
 
 ## 6.1.1 (2026-02-14)
 * Update tests from (unsupported) jasmine-node to jasmine 6.0.0.
