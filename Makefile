@@ -19,6 +19,9 @@ PARSER_OUT_FILE = $(LIB_DIR)/parser.js
 CASEFOLD_SRC_FILE = $(LIB_DIR)/utils/casefold.pegjs
 CASEFOLD_OUT_FILE = $(LIB_DIR)/utils/casefold.js
 
+TRANSFORMARRAY_SRC_FILE = $(LIB_DIR)/utils/transform-array.pegjs
+TRANSFORMARRAY_OUT_FILE = $(LIB_DIR)/utils/transform-array.js
+
 VERSION_FILE = VERSION
 
 # ===== Executables =====
@@ -41,6 +44,10 @@ parser:
 # Generate the case fold definitions parser
 casefold:
 	$(WIKIPEG) --precise-failure $(CASEFOLD_SRC_FILE) $(CASEFOLD_OUT_FILE)
+
+# Generate the array transformation parser
+transform-array:
+	$(WIKIPEG) --precise-failure $(TRANSFORMARRAY_SRC_FILE) $(TRANSFORMARRAY_OUT_FILE)
 
 test: spec common-tests-php common-tests-js
 

@@ -238,7 +238,7 @@ NumericLiteral =
 ArrayLiteral =
   "[" VSpace "]"
   {
-    return [];
+    return [/*array*/];
   }
   / "[" VSpace first:Expression rest:( VSpace "," VSpace @Expression )* VSpace ","? VSpace "]"
   {
@@ -248,7 +248,7 @@ ArrayLiteral =
 ObjectLiteral =
   "{" VSpace "}"
   {
-    return $this->assocFromPairs([]);
+    return $this->assocFromPairs([/*array*/]);
   }
   / "{" VSpace first:Property rest:( VSpace "," VSpace  @Property )* VSpace ","? VSpace "}"
   {
