@@ -31,7 +31,9 @@
 		"package.json"
 	],
 	"main": "lib/peg",
-	"bin": "bin/wikipeg",
+	"bin": {
+		"wikipeg": "bin/wikipeg"
+	},
 	"scripts": {
 		"eslint": "make eslint",
 		"test": "make eslint && make test",
