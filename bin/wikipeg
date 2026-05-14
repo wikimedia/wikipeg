@@ -33,6 +33,7 @@ Options:
                                      "module.exports")
       --php                          force PHP mode regardless of extension
       --class-name <name>            specify generated PHP class name
+      --esm                          generate ESM module instead of CommonJS
       --cache                        make generated parser cache results
       --allowed-start-rules <rules>  comma-separated list of rules the generated
                                      parser will be allowed to start parsing
@@ -122,6 +123,7 @@ function readStream(inputStream, callback) {
 
 /* This makes the generated parser a CommonJS module by default. */
 var exportVar = "module.exports";
+var sourceSuffix = "";
 var options = {
   cache:    false,
   output:   "source",
@@ -140,6 +142,11 @@ while (args.length > 0 && isOption(args[0])) {
 
     case "--php":
       options.language = "php";
+      break;
+
+    case "--esm":
+      exportVar = "const api";
+      sourceSuffix = "\nexport default api;";
       break;
 
     case '--common-lang':
@@ -318,6 +325,7 @@ readStream(inputStream, function(input) {
 
   if (options.language === 'javascript') {
     outputStream.write(exportVar !== "" ? `${exportVar} = ${source}\n` : `${source}\n`);
+    outputStream.write(sourceSuffix);
   } else {
     outputStream.write(source + "\n");
   }
