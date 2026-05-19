@@ -4,6 +4,7 @@
 
 const PEG  = require("../../lib/peg");
 const readline = require("readline");
+const buildParser = require('./buildParser.js').buildParser;
 
 process.stdin.setEncoding('utf8');
 
@@ -14,18 +15,8 @@ const rl = readline.createInterface({
 });
 
 rl.on('line', function (line) {
-  let options = {
-    cache:    false,
-    output:   "source",
-    trace:    false,
-    plugins:  [],
-    language: 'php',
-    commonLang: true,
-    optimizeFirstSet: 'call',
-  };
-  Object.assign(options, JSON.parse(line));
-
-  process.stdout.write(JSON.stringify(PEG.buildParser(options.input, options) + "\n") + "\n");
+  let result = buildParser(JSON.parse(line));
+  process.stdout.write(JSON.stringify(result) + "\n");
 });
 
 rl.on('error', function(error) {

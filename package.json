@@ -37,7 +37,8 @@
 	"scripts": {
 		"eslint": "make eslint",
 		"test": "make eslint && make test",
-		"rebuild": "make parser"
+		"test-with-php": "make eslint && make test-with-php",
+		"rebuild": "make rebuild"
 	},
 	"repository": {
 		"type": "git",

@@ -12,7 +12,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 function runCommonTests() {
 	global $argv;
 	$runner = new TestRunner;
-	$options = getopt( 'v', [ 'id:', 'dump-code', 'help', 'node:' ] );
+	$options = getopt( 'v', [ 'id:', 'dump-code', 'from-cache', 'write-cache', 'help', 'node:' ] );
 	if ( isset( $options['help'] ) ) {
 		error_log(
 			"Usage: php {$argv[0]} [..options...]\n" .
@@ -20,6 +20,8 @@ function runCommonTests() {
 			"  --id=<id>       Specify either the test ID (e.g. 10) or the case ID (e.g. 10.4)\n" .
 			"  -v              Print something when tests start and stop\n" .
 			"  --dump-code     Write the generated PHP code for the selected tests to stdout\n" .
+			"  --from-cache    Use cached wikipeg output\n" .
+			"  --write-cache   Write wikipeg output to cache\n" .
 			"  --node=<path>   Specify an alternative Node.js binary\n"
 		);
 

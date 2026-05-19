@@ -34,7 +34,7 @@
 			"@phpcs",
 			"@phan",
 			"minus-x check .",
-			"if [ 'x'$(which node) != 'x' ]; then php tests/php/runCommonTests.php ; fi"
+			"php tests/php/runCommonTests.php --from-cache"
 		],
 		"phan": "phan --allow-polyfill-parser",
 		"cover": "phpunit --coverage-html coverage",

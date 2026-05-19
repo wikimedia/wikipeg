@@ -19,12 +19,15 @@ class TestRunner {
 	private array $codeLines;
 	private string $nodeBinary;
 
+	private static string $parseCacheFile = __DIR__ . '/testcache.json';
+	private array $parseCache = [];
+
 	/** @var resource|false */
-	private $serverProc;
+	private $serverProc = false;
 	/** @var resource|false */
-	private $serverIn;
+	private $serverIn = false;
 	/** @var resource|false */
-	private $serverOut;
+	private $serverOut = false;
 
 	private function readFile( string $fileName ): array {
 		$testFileParser = $this->makeTestFileParser();
@@ -46,14 +49,24 @@ class TestRunner {
 		$this->targetId = $options['id'] ?? null;
 		$this->dumpCode = isset( $options['dump-code'] );
 		$this->nodeBinary = $options['node'] ?? 'node';
-
-		$this->startServer();
+		$initialCacheContents = null;
+		if ( file_exists( self::$parseCacheFile ) ) {
+			$initialCacheContents = file_get_contents( self::$parseCacheFile );
+			if ( isset( $options['from-cache'] ) ) {
+				$this->parseCache = json_decode( $initialCacheContents, true );
+			}
+		}
 
 		echo "Running language-independent tests against PHP\n";
 
 		$this->setErrorContext( null );
 		$this->success = true;
 		$this->successCount = 0;
+
+		if ( isset( $options['write-cache'] ) && $this->targetId !== null ) {
+			$this->error( "--id option incompatible with --write-cache option" );
+			$this->targetId = null;
+		}
 
 		$tests = $this->readFile( $fileName );
 
@@ -73,6 +86,15 @@ class TestRunner {
 
 		$this->terminateServer();
 
+		ksort( $this->parseCache );
+		$finalCacheContents = json_encode( $this->parseCache, JSON_PRETTY_PRINT );
+		if ( isset( $options['write-cache'] ) ) {
+			file_put_contents( self::$parseCacheFile, $finalCacheContents );
+			return true;
+		}
+		if ( $initialCacheContents !== $finalCacheContents ) {
+			echo "WARNING: cache out of date\n";
+		}
 		return $this->success;
 	}
 
@@ -170,10 +192,15 @@ class TestRunner {
 	}
 
 	private function terminateServer() {
-		proc_close( $this->serverProc );
+		if ( $this->serverProc !== false ) {
+			proc_close( $this->serverProc );
+		}
 	}
 
 	private function checkServerStatus() {
+		if ( $this->serverProc === false ) {
+			$this->startServer();
+		}
 		$status = proc_get_status( $this->serverProc );
 		if ( !$status['running'] ) {
 			if ( $status['signaled'] ) {
@@ -188,15 +215,20 @@ class TestRunner {
 	 * @param mixed $options
 	 */
 	private function buildParser( $options ): string {
+		ksort( $options );
+		$encodedOptions = json_encode( $options );
+		if ( isset( $this->parseCache[$encodedOptions] ) ) {
+			return $this->parseCache[$encodedOptions];
+		}
 		$this->checkServerStatus();
-		fwrite( $this->serverIn, json_encode( $options ) . "\n" );
+		fwrite( $this->serverIn, $encodedOptions . "\n" );
 		$result = fgets( $this->serverOut );
 
 		$this->checkServerStatus();
 		$code = json_decode( $result );
 
-		// Remove open tag
-		return preg_replace( '/^<\?php/', '', $code );
+		$this->parseCache[$encodedOptions] = $code;
+		return $code;
 	}
 
 	private function makeTestFileParser() {
@@ -250,15 +282,7 @@ class TestRunner {
 			'className' => $className,
 			'cache' => $test['cache'],
 		];
-		$this->checkServerStatus();
-		fwrite( $this->serverIn, json_encode( $options ) . "\n" );
-		$result = fgets( $this->serverOut );
-
-		$this->checkServerStatus();
-		$code = json_decode( $result );
-
-		// Remove open tag
-		$code = preg_replace( '/^<\?php/', '', $code );
+		$code = $this->buildParser( $options );
 
 		if ( $this->dumpCode ) {
 			echo $code;

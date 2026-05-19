@@ -35,7 +35,7 @@ BENCHMARK_RUN = $(BENCHMARK_DIR)/run
 
 # ===== Targets =====
 
-all: parser test-parsers
+all: rebuild
 
 # Generate the grammar parser
 parser:
@@ -49,7 +49,17 @@ casefold:
 transform-array:
 	$(WIKIPEG) --precise-failure $(TRANSFORMARRAY_SRC_FILE) $(TRANSFORMARRAY_OUT_FILE)
 
-test: spec common-tests-php common-tests-js
+# Generate the test case cache
+testcache:
+	$(PHP) tests/php/runCommonTests.php --write-cache
+
+rebuild: parser casefold transform-array testcache
+
+# If we've got PHP available, run the php test suite as well
+test-with-php: spec common-tests-js common-tests-php
+
+# If we don't have PHP available, validate that the testcache is up-to-date
+test: spec common-tests-js validate-testcache
 
 # Run the spec suite
 spec:
@@ -60,6 +70,10 @@ common-tests-php:
 
 common-tests-js:
 	$(NODE) tests/javascript/runCommonTests.js
+
+# Validate the cached php output
+validate-testcache:
+	$(NODE) tests/javascript/validate-testcache.js
 
 # Run the benchmark suite
 benchmark:
@@ -75,5 +89,5 @@ eslint:
 	  $(BENCHMARK_RUN)                                                       \
 	  $(WIKIPEG)
 
-.PHONY:  parser test-parsers test common-tests-php spec benchmark eslint
-.SILENT: parser test-parsers test common-tests-php spec benchmark eslint
+.PHONY:  all rebuild parser test common-tests-php spec benchmark eslint
+.SILENT: all rebuild parser test common-tests-php spec benchmark eslint
