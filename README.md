@@ -589,12 +589,17 @@ All parameters referenced in the grammar have an initial value and can
 be used before their first assignment.
 
 Parameters have a type detected at compile time: boolean, integer,
-string, reference, or labeled expression. Initial values for each type are:
+or string.  Initial values for each type are:
   - boolean: false
   - integer: 0
   - string: ""
-  - reference: null
-  - labeled expression: null (or the integer or string default value)
+
+Parameters can also be a *reference* to a value of one of these types,
+in which case they are initialized to `null`.  Parameters can also be
+set to the value of a labeled expression; these assignments are
+ignored for the purpose of assigning a type and initial value.  However,
+if *every* assignment to the parameter is a labeled expression it is
+given the initial value `null`.
 
 The parameter namespace is global, but the value of a parameter reverts
 to its previous value after termination of the assigning rule reference.

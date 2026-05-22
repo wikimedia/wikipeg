@@ -1659,3 +1659,18 @@ number = $[0-9]
 "12" => "not equal"
 "22" => "equal"
 !! end
+
+!! desc
+147. Parameter *reference* value assertions (string)
+!! grammar
+start = "1" @rule<&p="1">
+      / "2" @rule<&p="2">
+      / "3" @rule<&p="3">
+rule = &<p=="1"> { return 1; }
+     / !<p=="3"> { return 2; }
+     / &<p>      { return 3; }
+!! cases
+"1" => 1
+"2" => 2
+"3" => 3
+!! end

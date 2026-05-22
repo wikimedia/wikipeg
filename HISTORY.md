@@ -6,6 +6,8 @@
   grammar specification.
 * Add --esm option to wikipeg binary to allow creation of a JavaScript
   ESM module.
+* Bug fix to parameter value assertions involving reference
+  parameters, which would previously incorrectly fail a type check.
 
 ## 6.1.2 (2026-05-07)
 * Update jasmine to 7.0.0-pre.1.  This removes the reported security
