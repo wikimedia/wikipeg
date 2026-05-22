@@ -93,6 +93,11 @@ class TestRunner {
 			return true;
 		}
 		if ( $initialCacheContents !== $finalCacheContents ) {
+			if ( isset( $options[ 'from-cache' ] ) ) {
+				echo "ERROR: cache out of date\n";
+				echo "Run `make testcache` to regenerate cache file.\n";
+				return false;
+			}
 			echo "WARNING: cache out of date\n";
 		}
 		return $this->success;
