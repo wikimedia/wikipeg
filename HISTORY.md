@@ -1,6 +1,11 @@
 # Release History
 
 ## x.x.x (not yet released)
+* Add array-transformation rules to --common-lang transformation,
+  which allows you to generate PHP and JavaScript parser from the same
+  grammar specification.
+* Add --esm option to wikipeg binary to allow creation of a JavaScript
+  ESM module.
 
 ## 6.1.2 (2026-05-07)
 * Update jasmine to 7.0.0-pre.1.  This removes the reported security
