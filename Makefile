@@ -1,6 +1,6 @@
 # ===== Variables =====
 
-WIKIPEG_VERSION = `cat $(VERSION_FILE)`
+WIKIPEG_VERSION = `jq -r '.version' package.json`
 
 # ===== Directories =====
 
@@ -22,8 +22,6 @@ CASEFOLD_OUT_FILE = $(LIB_DIR)/utils/casefold.js
 TRANSFORMARRAY_SRC_FILE = $(LIB_DIR)/utils/transform-array.pegjs
 TRANSFORMARRAY_OUT_FILE = $(LIB_DIR)/utils/transform-array.js
 
-VERSION_FILE = VERSION
-
 # ===== Executables =====
 
 NODE          = node
@@ -36,6 +34,11 @@ BENCHMARK_RUN = $(BENCHMARK_DIR)/run
 # ===== Targets =====
 
 all: rebuild
+
+# Check that the version numbers in package.json, package-lock.json, lib/peg.js
+# and HISTORY.md are  consistent
+check-version:
+	$(NODE) tests/javascript/validate-versions.js
 
 # Generate the grammar parser
 parser:

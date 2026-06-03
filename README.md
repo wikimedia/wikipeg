@@ -752,10 +752,39 @@ done to manage the memory cost of excessive caching of simple matches.
 For more predictable caching, you may wish to use the `noInlining`
 option.
 
-Requirements
--------------
+Making a release
+----------------
+Each wikipeg release is made to the PHP ecosystem
+(composer/packagist.org) and Node/JS ecosystem (npm/npmjs.org)
+together.
 
-* Node.js 6 or later
+1. Begin by running `composer update-history` which will
+update the [`HISTORY.md`](./HISTORY.md) with the next patch version.
+Update the release number in `HISTORY.md` if this is to be a minor or
+major release.
+
+2. Update the version number in [`package.json`](./package.json) and
+at the top of [`lib/peg.js`](./lib/peg.js).
+
+3. Run `npm install --package-lock-only` to update the version number
+in [`package-lock.json`](./package-lock.json).
+
+4. Commit these changes with the commit message "Release <version number>",
+and push to gerrit. When merged, sign and tag the resulting commit
+with the unprefixed version number; eg `git tag -s 6.1.3`.  Push the
+tag to the origin (`git push origin 6.1.3`) to complete the
+PHP/composer/`packagist.org` release.
+
+5. With the tagged release as your local HEAD, `npm publish` to push
+the release to node/npm/`npmjs.org`.
+
+6. Run `composer update-history` again, which should add an entry to
+`HISTORY.md` for the next "not yet released" version.  Add a `-git`
+suffix to the version number in [`package.json`](./package.json) and
+at the top of [`lib/peg.js`](./lib/peg.js).
+Run `npm install --package-lock-only` to update `package-lock.json`.
+Commit these changes with the commit message "Bump version after
+release" and push to gerrit.
 
 Development
 -----------

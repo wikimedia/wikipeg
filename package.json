@@ -19,7 +19,6 @@
 		"HISTORY.md",
 		"LICENSE",
 		"README.md",
-		"VERSION",
 		"bin/wikipeg",
 		"examples/*.pegjs",
 		"examples/*.pegphp",
@@ -36,7 +35,7 @@
 	},
 	"scripts": {
 		"eslint": "make eslint",
-		"test": "make eslint && make test",
+		"test": "make eslint && make test && make check-version",
 		"test-with-php": "make eslint && make test-with-php",
 		"rebuild": "make rebuild"
 	},
