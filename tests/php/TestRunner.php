@@ -19,7 +19,7 @@ class TestRunner {
 	private array $codeLines;
 	private string $nodeBinary;
 
-	private static string $parseCacheFile = __DIR__ . '/testcache.json';
+	private const PARSE_CACHE_FILE = __DIR__ . '/testcache.json';
 	private array $parseCache = [];
 
 	/** @var resource|false */
@@ -50,8 +50,8 @@ class TestRunner {
 		$this->dumpCode = isset( $options['dump-code'] );
 		$this->nodeBinary = $options['node'] ?? 'node';
 		$initialCacheContents = null;
-		if ( file_exists( self::$parseCacheFile ) ) {
-			$initialCacheContents = file_get_contents( self::$parseCacheFile );
+		if ( file_exists( self::PARSE_CACHE_FILE ) ) {
+			$initialCacheContents = file_get_contents( self::PARSE_CACHE_FILE );
 			if ( isset( $options['from-cache'] ) ) {
 				$this->parseCache = json_decode( $initialCacheContents, true );
 			}
@@ -89,7 +89,7 @@ class TestRunner {
 		ksort( $this->parseCache );
 		$finalCacheContents = json_encode( $this->parseCache, JSON_PRETTY_PRINT );
 		if ( isset( $options['write-cache'] ) ) {
-			file_put_contents( self::$parseCacheFile, $finalCacheContents );
+			file_put_contents( self::PARSE_CACHE_FILE, $finalCacheContents );
 			return true;
 		}
 		if ( $initialCacheContents !== $finalCacheContents ) {
