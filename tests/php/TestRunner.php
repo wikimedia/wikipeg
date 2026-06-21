@@ -275,35 +275,6 @@ class TestRunner {
 		return new $className;
 	}
 
-	/** @return mixed */
-	private function makeParser( array $test ) {
-		$id = $test['id'];
-		$className = "Wikimedia\\WikiPEG\\Tests\\Test$id";
-		if ( $test['cache'] ) {
-			$className .= 'C';
-		}
-		$options = [
-			'input' => $test['grammar'],
-			'className' => $className,
-			'cache' => $test['cache'],
-		];
-		$code = $this->buildParser( $options );
-
-		if ( $this->dumpCode ) {
-			echo $code;
-		}
-
-		$this->codeLines = explode( "\n", $code );
-
-		try {
-			eval( $code );
-		} catch ( \ParseError $e ) {
-			$this->error( "Error parsing generated PHP code: " . $e->getMessage() );
-			return null;
-		}
-		return new $className;
-	}
-
 	private function getCaseId( array $test, int $caseIndex ): string {
 		$cache = $test['cache'] ? '.cache' : '';
 		return $test['id'] . $cache . '.' . ( $caseIndex + 1 );
