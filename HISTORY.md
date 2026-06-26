@@ -1,5 +1,7 @@
 # Release History
 
+## x.x.x (not yet released)
+
 ## 6.1.4 (2026-06-26)
 * Bug fix to boolean reference parameters
 * Dependency updates.
