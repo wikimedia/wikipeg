@@ -1674,3 +1674,17 @@ rule = &<p=="1"> { return 1; }
 "2" => 2
 "3" => 3
 !! end
+
+!! desc
+148. Parameter *reference* value assertions (bool)
+!! grammar
+start = "1" @rule
+      / "2" @rule<&p=false>
+      / "3" @rule<&p=true>
+rule = !<p> { return false; }
+     / &<p> { return true; }
+!! cases
+"1" => false
+"2" => false
+"3" => true
+!! end
