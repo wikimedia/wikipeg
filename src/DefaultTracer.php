@@ -52,7 +52,7 @@ class DefaultTracer implements Tracer {
 				continue;
 			}
 			if ( $argName === '$boolParams' ) {
-				$argParts[] = '0x' . base_convert( $argValue, 10, 16 );
+				$argParts[] = '0x' . base_convert( (string)$argValue, 10, 16 );
 			} else {
 				$displayName = str_replace( '$param_', '', $argName );
 				if ( $displayName[0] === '&' ) {
